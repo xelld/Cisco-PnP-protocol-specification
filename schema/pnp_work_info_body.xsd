@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Work-Info Schema Version 1.0
+ * File: pnp_work_info_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample payload -
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+        <info xmlns="urn:cisco:pnp:work-info" correlator="CiscoPnP-1.0-1-11-14A9C6D0-2">
+                <workInfo>
+                        <bye/>
+                </workInfo>
+        </info>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:work-info" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:work-info" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="info"> <!-- pnp response ack from pnp server -->
+		<xs:complexType>
+			<xs:sequence>
+                                <xs:element name="workInfo" minOccurs="1" maxOccurs="1">
+                			<xs:complexType>
+                        			<xs:sequence>
+							<xs:element name="bye" type="xs:string" minOccurs="1" maxOccurs="1"/> <!-- pnp response ack from pnp server -->
+							<xs:element name="sid" type="xs:string" minOccurs="0" maxOccurs="1"/> <!-- session id for server session control -->
+						</xs:sequence>            
+					</xs:complexType>
+				</xs:element>                
+			</xs:sequence>            
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_work_info_body.xsd -->

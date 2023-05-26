@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Snmp Schema Version 1.0
+ * pnp_snmp_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:snmp" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:snmp" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+                        <xs:sequence>
+                                <xs:element name="snmp" minOccurs="1" maxOccurs="1">
+                                        <xs:complexType>
+						<xs:sequence>
+							<xs:element name="rawFormat" type="xs:boolean" minOccurs="1" maxOccurs="1"/><!--  -->
+						</xs:sequence>            
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+                     <xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 2600"/> <!-- XSVC_ERROR_SNMP_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 2601"/> <!-- XSVC_ERROR_SNMP_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 2602"/> <!-- XSVC_ERROR_MIBS_DATAGRAM_MALLOC -->
+										<xs:enumeration value="PnP Service Error 2603"/> <!-- XSVC_ERROR_MIBS_INPUT_RESOURCE_UNAVAILABLE -->
+										<xs:enumeration value="PnP Service Error 2604"/> <!-- XSVC_ERROR_MIBS_OUTPUT_RESOURCE_UNAVAILABLE -->
+										<xs:enumeration value="PnP Service Error 2605"/> <!-- XSVC_ERROR_MIBS_OUTPUT_RESOURCE_DATA_UNAVAILABLE -->
+										<xs:enumeration value="PnP Service Error 2606"/> <!-- XSVC_ERROR_MIBS_RETRIEVE_FAIL -->
+										<xs:enumeration value="PnP Service Error 2607"/> <!-- XSVC_ERROR_MIBS_INVALID_REQUEST -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>		
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_snmp_body.xsd -->

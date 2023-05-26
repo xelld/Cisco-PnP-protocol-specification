@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Licensing Schema Version 1.0
+ * pnp_licensing_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:licensing" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:licensing" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request"> <!-- PnP Licensing Request -->		
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="licensing" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+						<!-- To accept the end-user license agreement (EULA) for all Cisco IOS software packages and features at one time -->
+<!--
+PLEASE  READ THE  FOLLOWING TERMS  CAREFULLY. INSTALLING THE LICENSE OR
+LICENSE  KEY  PROVIDED FOR  ANY CISCO  PRODUCT  FEATURE  OR  USING SUCH
+PRODUCT  FEATURE  CONSTITUTES  YOUR  FULL ACCEPTANCE  OF  THE FOLLOWING
+TERMS. YOU MUST NOT PROCEED FURTHER IF YOU ARE NOT WILLING TO  BE BOUND
+BY ALL THE TERMS SET FORTH HEREIN.
+ 
+Use of this product feature requires  an additional license from Cisco,
+together with an additional  payment.  You may use this product feature
+on an evaluation basis, without payment to Cisco, for 60 days. Your use
+of the  product,  including  during the 60 day  evaluation  period,  is
+subject to the Cisco end user license agreement
+http://www.cisco.com/en/US/docs/general/warranty/English/EU1KEN_.html
+If you use the product feature beyond the 60 day evaluation period, you
+must submit the appropriate payment to Cisco for the license. After the
+60 day  evaluation  period,  your  use of the  product  feature will be
+governed  solely by the Cisco  end user license agreement (link above),
+together  with any supplements  relating to such product  feature.  The
+above  applies  even if the evaluation  license  is  not  automatically
+terminated  and you do  not receive any notice of the expiration of the
+evaluation  period.  It is your  responsibility  to  determine when the
+evaluation  period is complete and you are required to make  payment to
+Cisco for your use of the product feature beyond the evaluation period.
+ 
+Your  acceptance  of  this agreement  for the software  features on one
+product  shall be deemed  your  acceptance  with  respect  to all  such
+software  on all Cisco  products  you purchase  which includes the same
+software.  (The foregoing  notwithstanding, you must purchase a license
+for each software  feature you use past the 60 days evaluation  period,
+so  that  if you enable a software  feature on  1000  devices, you must
+purchase 1000 licenses for use past  the 60 day evaluation period.)   
+ 
+Activation  of the  software command line interface will be evidence of
+your acceptance of this agreement.
+-->
+							<xs:element name="EULA" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="accept" use="required" type="xs:string" fixed="yes"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="copy" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="source" minOccurs="1" maxOccurs="1"><!-- URL of the source file -->
+											<xs:complexType>
+												<xs:sequence>
+													<xs:choice>
+														<xs:element name="location">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="clear" type="xs:boolean" use="required"/>										
+																</xs:extension>										
+															</xs:simpleContent>										
+														</xs:complexType>
+													</xs:element>
+														<xs:element name="uri">
+															<xs:complexType>
+																<xs:simpleContent>
+																	<xs:extension base="xs:string">
+																		<xs:attribute name="clear" type="xs:boolean" use="required"/>
+																	</xs:extension>	
+																</xs:simpleContent>
+															</xs:complexType>
+														</xs:element>
+													</xs:choice>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="level" minOccurs="0" maxOccurs="1" type="xs:string"/><!-- boot level -->
+							<xs:element name="apply" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="feature" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="delete" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="feature" type="xs:string" minOccurs="1" maxOccurs="15"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>						
+					</xs:complexType>				
+				</xs:element>				
+				<xs:choice minOccurs="1" maxOccurs="1">
+					<xs:element name="reload">
+						<xs:complexType>
+							<xs:sequence>							
+								<xs:element name="reason" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="delayIn" minOccurs="0" maxOccurs="1" type="xs:integer"/>
+								<xs:element name="user" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="saveConfig" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+							</xs:sequence>							
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="noReload" fixed=""/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:annotation>
+			<xs:documentation>PnP Licensing Response</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element name="licensingInfo" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Licensing Info - Only when the service is SUCCESSFUL i.e when "success" attribute is "1"</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>							
+							<xs:element name="total" minOccurs="1" maxOccurs="1" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>Total Licenses </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="successfull" minOccurs="1" maxOccurs="1" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>Number of licenses succesfully installed </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="failed" minOccurs="0" maxOccurs="1" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>Number of licenses failed to install</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="existing" minOccurs="0" maxOccurs="1" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>Number of licenses already installed on the device</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>			
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Error Info - Only when the service is FAILED i.e when "success" attribute is "0"</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>							
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_SEV_NONE"/>
+										<xs:enumeration value="XSVC_WARNING"/>
+										<xs:enumeration value="XSVC_ERROR_LCSG_INSTALL"/>
+									</xs:restriction>
+								</xs:simpleType>							
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 1900"/> <!-- XSVC_ERROR_LICENSING_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 1901"/> <!-- XSVC_ERROR_LICENSING_UNSUPPORTED -->
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>							
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_licensing_body.xsd -->

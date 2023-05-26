@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP NAPP Server Schema Version 1.0
+ * pnp_napp_server_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:napp-server" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:napp-server" elementFormDefault="qualified" attributeFormDefault="unqualified">
+                <xs:element name="request">
+                        <xs:complexType>
+                                <xs:sequence>
+                                        <xs:element name="napp-server" minOccurs="1" maxOccurs="1">
+                                                <xs:complexType>
+                                                        <xs:choice>
+                                                                <xs:element name="enable-napp" type="xs:string"/>
+                                                                <xs:element name="disable-napp" type="xs:string"/>
+                                                        </xs:choice>                              
+                                                </xs:complexType>
+                                        </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="correlator" type="xs:string" use="required"/>
+                        </xs:complexType>
+                </xs:element>
+                <xs:element name="response">
+                        <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="service-response-status" minOccurs="1" maxOccurs="1">
+                                        <xs:complexType>
+                                                <xs:sequence>
+                                                        <xs:element name="transaction-status" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                                        <xs:element name="error-status" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                                        <xs:element name="error-message" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                                </xs:sequence>                                      
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="correlator" type="xs:string" use="required"/>
+				<xs:attribute name="success" use="required">
+					<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+					<xs:simpleType>
+						<xs:restriction base="xs:integer">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+                        </xs:complexType>
+                </xs:element>
+</xs:schema>
+<!-- End of pnp_napp_server_body.xsd -->

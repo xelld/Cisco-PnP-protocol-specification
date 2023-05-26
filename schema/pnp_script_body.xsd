@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Script Schema Version 1.0
+ * File: pnp_script_body.xsd
+ * Last Modified: May 31, 2017
+ *
+ ******************************************
+
+Sample request 1 -
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+    <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:script">
+        <script>
+            <copy>
+                <source>
+                    <location>tftp://172.19.211.47//tftpboot/adrawat/sample_ok.tcl</location>
+                </source>
+            </copy>
+            <argument>test</argument>
+        </script>
+    </request>
+</pnp>
+
+ ******************************************
+
+Sample request 2 - (only supported in newer releases)
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V" usr="admin" pwd="cisco">
+    <request correlator="CiscoPnP-1.0-48-110-21FA8E8-8" xmlns="urn:cisco:pnp:script">
+        <script stype="tcl" details="all" resultFile="pnp-script-result-data" maxWait="PT10S">
+            <copy>
+                <source>
+                    <inline>show version</inline>
+                </source>
+            </copy>
+            <arguments>aa1 bb2 cc3 dd4 ee5 ff6 gg7 hh8 ii9 jj10 kk11 ll12 mm13 nn14</arguments>
+        </script>
+    </request>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:script" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:script" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request"> <!-- pnp request from pnp server -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="script" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="copy" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="source" minOccurs="1" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:choice>
+														<xs:element name="location" type="xs:string"/> <!-- Location of the Script file to be executed -->
+														<xs:element name="uri" type="xs:string"/> <!-- relative path of the Script on the pnp server -->
+														<xs:element name="inline" type="xs:string"/> <!-- embedded inline script, must be xml escaped, size is platform dependent (should be under 10 Kb) -->
+													</xs:choice>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<!-- Script file arguments, optional -->
+							<xs:element name="arguments" minOccurs="0" maxOccurs="1" type="xs:string"/> <!-- command line argument used by the script -->
+						</xs:sequence>
+						<xs:attribute name="maxWait" type="xs:duration" use="optional" default="PT3600S">
+							<xs:annotation>
+								<xs:documentation>
+									The time interval to accumulate data for while waiting for the script to complete. 
+									Once the interval expires the operation stops and all accumulated data is sent in the response.  
+									The default is 3600 seconds (1 hour).
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="details" use="optional">
+							<xs:annotation>
+								<xs:documentation>Use this attribute to control the level of error details reported.</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="brief"/> <!-- no script error collection -->
+									<xs:enumeration value="errors"/> <!-- collect script error only -->
+									<xs:enumeration value="all"/> <!-- collect all script details -->
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="result_file" type="xs:string" use="optional"/> <!-- script reulst file -->
+						<xs:attribute name="stype" use="optional"> <!-- script type -->
+							<xs:annotation>
+								<xs:documentation>Use this attribute to control the type of script.</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="tcl"/> <!-- tcl script, preamble: ##tcl-install-script -->
+									<xs:enumeration value="python"/> <!-- python script, preamble: #!/usr/bin/env python -->
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>				
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response"> <!-- pnp response to pnp server -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="ERROR"/> <!-- XSVC_ERROR -->	
+										<xs:enumeration value="WARNING"/> <!-- XSVC_WARNING -->									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 2500"/> <!-- XSVC_ERROR_SCRIPT_INTERNAL-->
+										<xs:enumeration value="PnP Service Error 2501"/> <!-- XSVC_ERROR_SCRIPT_UNSUPPORTED-->
+										<xs:enumeration value="PnP Service Error 2502"/> <!-- XSVC_ERROR_SCRPT_EXEC_FAILED-->
+										<xs:enumeration value="PnP Service Error 2503"/> <!-- XSVC_ERROR_SCRPT_FILE_OPEN_FAILED-->
+										<xs:enumeration value="PnP Service Error 2504"/> <!-- XSVC_ERROR_SCRPT_UNABLE_TO_CREATE_FILE_IMG--> 
+										<xs:enumeration value="PnP Service Error 2505"/> <!-- XSVC_ERROR_SCRPT_FILE_READ_FAILED -->
+										<xs:enumeration value="PnP Service Error 2506"/> <!-- XSVC_ERROR_SCRPT_UNEXPECTED_FILE_TYPE -->
+										<xs:enumeration value="PnP Service Error 2507"/> <!-- XSVC_ERROR_SCRPT_UNKNOWN_ERROR -->
+										<xs:enumeration value="PnP Service Error 2508"/> <!-- XSVC_ERROR_SCRIPT_EMPTY_SCRIPT -->
+										<xs:enumeration value="PnP Service Error 2509"/> <!-- XSVC_ERROR_SCRIPT_CANT_ALLOC_PROC_DATA -->
+										<xs:enumeration value="PnP Service Error 2510"/> <!-- XSVC_ERROR_SCRIPT_CANT_GET_CALLING_PID -->
+										<xs:enumeration value="PnP Service Error 2511"/> <!-- XSVC_ERROR_SCRIPT_CANT_GET_CALLING_PROC_NAME -->
+										<xs:enumeration value="PnP Service Error 2512"/> <!-- XSVC_ERROR_SCRIPT_CANT_ALLOC_ARG_STRING -->
+										<xs:enumeration value="PnP Service Error 2513"/> <!-- XSVC_ERROR_SCRIPT_CANT_FIND_SCRIPT_NAME -->
+										<xs:enumeration value="PnP Service Error 2514"/> <!-- XSVC_ERROR_SCRIPT_CANT_ALLOC_INTERP_DATA -->
+										<xs:enumeration value="PnP Service Error 2515"/> <!-- XSVC_ERROR_SCRIPT_CANT_GET_TTYSOC -->
+										<xs:enumeration value="PnP Service Error 2516"/> <!-- XSVC_ERROR_SCRIPT_CANT_GET_TCL_PROC_NAME -->
+										<xs:enumeration value="PnP Service Error 2517"/> <!-- XSVC_ERROR_SCRIPT_MAX_WAIT_EXPIRED -->
+										<xs:enumeration value="PnP Service Error 2518"/> <!-- XSVC_ERROR_SCRIPT_CANT_ALLOC_CSB -->
+										<xs:enumeration value="PnP Service Error 2519"/> <!-- XSVC_ERROR_SCRIPT_CANT_GET_PROC_ARGS -->
+										<xs:enumeration value="PnP Service Error 2520"/> <!-- XSVC_ERROR_SCRIPT_CANT_GET_VALID_TCL_ARGS -->
+										<xs:enumeration value="PnP Service Error 2521"/> <!-- XSVC_ERROR_SCRIPT_CANT_INIT_TCL_INTERPRETER -->
+										<xs:enumeration value="PnP Service Error 2522"/> <!-- XSVC_ERROR_SCRIPT_CANT_SET_TCL_INTERP_ARGS -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<!-- Verbose error message -->
+							<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>			
+                                <!-- service log is the raw vty output captured which might need special XML-escape handling -->
+                                <!-- for python script, this is the output of the python script, not vty capture -->
+                                <xs:element name="serviceLog" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                <!-- result data is the result set by the script -->
+                                <xs:element name="resultData" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>			
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_script_body.xsd -->

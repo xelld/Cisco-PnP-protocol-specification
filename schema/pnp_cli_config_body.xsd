@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP CLI-Config Schema Version 1.0
+ * File: pnp_cli_config_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15" noCheckTime="20" postReloadPriv="ztd">
+        <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:cli-config">
+                <configApply details="all">
+                        <config-data>
+                                <cli-config-data>
+                                        <cmd>access-list 1 permit any</cmd>
+                                </cli-config-data>
+                        </config-data>
+                </configApply>
+        </request>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:cli-config" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:cli-config" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:element name="request"> <!-- pnp request from pnp server -->
+        <xs:annotation>
+            <xs:documentation>PnP Config Request</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="configTest"> <!-- do syntax-check only without applying the config change -->
+                    <xs:annotation>
+                        <xs:documentation>Syntax check configuration</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="config-data"/>
+                        </xs:sequence>
+                        <xs:attribute name="details">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Use this attribute to control the level of error details reported.
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="brief"/> <!-- no config error collection -->
+                                    <xs:enumeration value="errors"/> <!-- collect config error only -->
+                                    <xs:enumeration value="all"/> <!-- collect all config details -->
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="configApply"> <!-- apply config change -->
+                    <xs:annotation>
+                        <xs:documentation>Update the running configuration</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="config-data">
+                                <xs:annotation>
+                                    <xs:documentation>Choose format for configuration data.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="action-on-fail" use="optional" default="continue">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Which action to take if a configuration command fails -
+					continue i.e. configure all commands in the request recording status of each command (default) OR 
+					stop i.e. stop configuring on first failure OR 
+					rollback i.e. stop configuring at the first error and restore configuration to the state before any configuration was applied. 
+					This is only enabled if the archive Cisco IOS CLI is configured.
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="stop"/> <!-- stop the config apply upon any config error -->
+                                    <xs:enumeration value="continue"/> <!-- contine config apply regardless config error, this will return success="1" -->
+                                    <xs:enumeration value="rollback"/> <!-- roll back the config change with the best effort, no guarantee of full recovery -->
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="details">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Use this attribute to control the level of error details reported.
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="brief"/> <!-- no config error collection -->
+                                    <xs:enumeration value="errors"/> <!-- collect config error only -->
+                                    <xs:enumeration value="all"/> <!-- collect all config details -->
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="configPersist"> <!-- save running config to startup config -->
+                    <xs:annotation>
+                        <xs:documentation>Save current running configuration</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="configExt"> <!-- extended non-IOS config service --> 
+                    <xs:annotation>
+                        <xs:documentation>Configuration extension to support inline string config</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="config-ext-data" type="xs:string"/> <!-- extended config data -->
+                        </xs:sequence>
+                        <xs:attribute name="details">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Use this attribute to control the level of error details reported.
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="brief"/> <!-- no config error collection -->
+                                    <xs:enumeration value="errors"/> <!-- collect config error only -->
+                                    <xs:enumeration value="all"/> <!-- collect all config details -->
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="type" use="required"> <!-- type of the config extension -->
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Use this attribute to specify the ext type/version.
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="json"/> <!-- json config service -->
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="dst" use="required">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Use this attribute to specify the platform this config needs to be applied to.
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="AP"/> <!-- for AP platform -->
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="correlator" type="xs:string" use="required"/> <!-- for device session control -->
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="response"> <!-- pnp response to pnp server -->
+        <xs:annotation>
+            <xs:documentation>PnP Config Response</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorInfo" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                        	<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="PnP Service Error 1200"/> <!-- XSVC_ERROR_CLI_CONFIG_INTERNAL -->
+                                        <xs:enumeration value="PnP Service Error 1201"/> <!-- XSVC_ERROR_CLI_CONFIG_UNSUPPORTED -->
+                                        <xs:enumeration value="PnP Service Error 1202"/> <!-- XSVC_ERROR_CLI_CONFIG_EXT_UNSUPPORTED -->
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        	<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="resultEntry" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:choice>
+                                <xs:element name="success">
+                                    <xs:complexType>
+                                        <xs:attribute name="change">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="CHANGE"/> <!-- config has been changed -->
+                                                    <xs:enumeration value="NO_CHANGE"/> <!-- no config change -->
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="mode">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="IMMEDIATE"/> <!-- config change was immediate -->
+                                                    <xs:enumeration value="DEFERRED"/> <!-- config change was deferred -->
+                                                    <xs:enumeration value="TEST"/> <!-- config change was a test only -->
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="failure">
+                                    <xs:complexType>
+                                        <xs:attribute name="errorType">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="TEMPORARY"/> <!-- config error was temporary -->
+                                                    <xs:enumeration value="PERMANENT"/> <!-- config error was permanent -->
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                        <xs:attribute name="errorCode" type="xs:string"/>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="invalid">
+                                    <xs:annotation>
+                                        <xs:documentation>Command does not set PRC</xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                                <xs:element name="notExecuted">
+                                    <xs:annotation>
+                                        <xs:documentation>
+                                            When commands are skipped because of a prior error.
+                                        </xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                            </xs:choice>
+                            <xs:element name="text" type="xs:string" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Text output from the command, if any.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="lineNumber" use="required"/>
+                        <xs:attribute name="cliString"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="correlator" type="xs:string" use="required"/> <!-- for device session control -->
+            <xs:attribute name="success" use="required">
+			<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+			<xs:simpleType>
+				<xs:restriction base="xs:integer">
+					<xs:minInclusive value="0"/>
+					<xs:maxInclusive value="1"/>
+				</xs:restriction>
+			</xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="config-data">
+        <xs:annotation>
+            <xs:documentation>Choose format for configuration data.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="config-dataType"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="config-dataType">
+        <xs:choice>
+            <xs:element name="cli-config-data">
+                <xs:annotation>
+                    <xs:documentation>
+                        To encapsulate a block of configuration commands where each line is individually tagged.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="cmd" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cli-config-data-block" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        To encapsulate a multiline block of configuration commands.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="xml-config-data">
+                <xs:annotation>
+                    <xs:documentation>
+                        To encapsulate XML tagged configuration commands in the format compatible with Cisco Enhanced Device Interface (EDI).
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Device-Configuration">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:any namespace="##any"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+</xs:schema>
+<!-- End of pnp_cli_config_body.xsd -->

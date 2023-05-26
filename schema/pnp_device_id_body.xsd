@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Device ID Schema Version 1.0
+ * pnp_device_id_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:work-info" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:work-info" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="info">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="deviceId" minOccurs="1" maxOccurs="1"><!--  -->
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="udi" minOccurs="1" maxOccurs="1" type="xs:string"/> <!-- device udi specified by PnP Agent -->
+							<xs:element name="SUDI" minOccurs="0" maxOccurs="1" type="xs:string"/> <!-- device SUDI specified by PnP Agent -->
+							<xs:element name="macAddress" minOccurs="0" maxOccurs="1" type="xs:string"/> <!-- device hostname specified by PnP Agent -->
+							<xs:element name="hostname" minOccurs="1" maxOccurs="1" type="xs:string"/> <!-- device hostname specified by PnP Agent -->
+							<xs:element name="authRequired" minOccurs="1" maxOccurs="1" type="xs:boolean"/> <!-- usr/pwd must be specified in the next pnp request or not -->
+							<xs:element name="viaProxy" minOccurs="0" maxOccurs="1" type="xs:boolean"/> <!-- whether this request is indirectly via proxy or not -->
+							<xs:element name="securityAdvise" minOccurs="0" maxOccurs="1" type="xs:string"/> <!-- to warn the user that transport e.g. HTTP is not secure -->
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>                              
+			</xs:sequence>            
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_device_id_body.xsd -->

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP EEM Proxy Schema Version 1.0
+ * File: pnp_eem_proxy_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+        <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:eem-proxy">
+                <eemProxy jobID="my_job_id" details="all">
+                        <EEM-Data-Format>eem proxy data format here</EEM-Data-Format>
+                        <EEM-Data-Block>eem proxy data block here</EEM-Data-Block>
+                </eemProxy>
+        </request
+</pnp>
+
+ ******************************************
+-->
+<!-- pnp_eem_proxy_body.xsd -->
+<xs:schema xmlns="urn:cisco:pnp:eem-proxy" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:eem-proxy" elementFormDefault="qualified" attributeFormDefault="unqualified">	
+	<xs:element name="request"> <!-- pnp request from pnp server -->
+		<xs:complexType>
+                        <xs:sequence>
+                                <xs:element name="eemProxy" minOccurs="1" maxOccurs="1">
+                                        <xs:complexType>
+						<xs:sequence>
+							<xs:element name="EEM-Data-Format" type="xs:string" minOccurs="1" maxOccurs="1"/> <!-- which format the eem data is encoded -->
+							<xs:element name="EEM-Data-Block" type="xs:string" minOccurs="1" maxOccurs="1"/> <!-- encoded eem data block -->
+						</xs:sequence>
+						<xs:attribute name="jobID" type="xs:string" use="required"/> <!-- eem job control id -->
+						<xs:attribute name="details"> <!-- to collect service log or not -->
+							<xs:annotation>
+								<xs:documentation>
+									Use this attribute to control the level of error details reported.
+									This attribute is only available when capability returns service-log feature.
+								</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="brief"/> <!-- no service log collection -->
+									<xs:enumeration value="errors"/> <!-- collect service log upon error -->
+									<xs:enumeration value="all"/> <!-- collect service log unconditionally -->
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>			
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response"> <!-- pnp response to pnp server -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element name="EEM-Response" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="ERROR"/>
+											<xs:enumeration value="WARNING"/>
+											<xs:enumeration value="INFO"/>
+										</xs:restriction>									
+									</xs:simpleType>								
+								</xs:element>
+								<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="PnP Service Error 3600"/> <!-- XSVC_ERROR_EEM_PROXY_INTERNAL -->
+											<xs:enumeration value="PnP Service Error 3601"/> <!-- XSVC_ERROR_EEM_PROXY_UNSUPPORTED -->
+											<xs:enumeration value="PnP Service Error 3602"/> <!-- XSVC_ERROR_EEM_PROXY_NO_SERVICE_DATA -->
+											<xs:enumeration value="PnP Service Error 3603"/> <!-- XSVC_ERROR_EEM_PROXY_NO_JOB_ID -->
+											<xs:enumeration value="PnP Service Error 3604"/> <!-- XSVC_ERROR_EEM_PROXY_NO_DATA_FORMAT -->
+											<xs:enumeration value="PnP Service Error 3605"/> <!-- XSVC_ERROR_EEM_PROXY_NO_DATA_BLOCK -->
+											<xs:enumeration value="PnP Service Error 3606"/> <!-- XSVC_ERROR_EEM_PROXY_SERVICE_FAILED -->
+										</xs:restriction>									
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>			
+				</xs:choice>
+				<!-- service log is the raw vty output captured which might need special XML-escape handling -->
+				<xs:element name="serviceLog" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>			
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>		
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_eem_proxy_body.xsd -->

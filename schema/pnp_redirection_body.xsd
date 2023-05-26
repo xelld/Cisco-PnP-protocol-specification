@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Redirection Schema Version 1.0
+ * pnp_redirection_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:redirection" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:redirection" elementFormDefault="qualified" attributeFormDefault="unqualified">
+		<xs:element name="request"> <!-- pnp request from pnp server -->
+				<xs:complexType>
+						<xs:sequence>
+								<xs:element name="redirection" minOccurs="1" maxOccurs="1">
+										<xs:complexType>
+												<xs:sequence>
+														<xs:element name="callback" type="xs:boolean" minOccurs="0" maxOccurs="1"/> <!-- profile will remain active when specified-->
+														<xs:element name="primary-server" minOccurs="1" maxOccurs="1"> <!-- primary-server in a profile -->
+																<xs:complexType>
+																		<xs:sequence>
+																				<xs:element name="protocol" minOccurs="1" maxOccurs="1">
+																						<xs:simpleType>
+																								<xs:restriction base="xs:string">
+																										<xs:enumeration value="http"/>
+																										<xs:enumeration value="https"/>
+																										<xs:enumeration value="xmpp-socket"/> <!-- No longer supported -->
+																										<xs:enumeration value="xmpp-starttls"/> <!-- No longer supported -->
+																										<xs:enumeration value="xmpp-tls"/> <!-- No longer supported -->
+																										<xs:enumeration value="capwap"/> <!-- Protocol for WLC redirection -->
+																								</xs:restriction>
+																						</xs:simpleType>
+																				</xs:element>
+																				<xs:element name="server-address" minOccurs="1" maxOccurs="1">
+																				<!-- server-address can be a <ipv4/><ipv6/> pair or a single element -->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:choice>
+																												<xs:element name="ipv4" type="xs:string"/>
+																												<xs:element name="ipv6" type="xs:string"/>
+																												<xs:element name="host" type="xs:string"/>
+																										</xs:choice>
+																										<xs:element name="port" minOccurs="0" maxOccurs="1">
+																										<!-- default port for http is 80; https is 443 -->
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:minInclusive value="1"/>
+																																<xs:maxInclusive value="65535"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																				<xs:element name="encryption" minOccurs="0" maxOccurs="1"> <!-- encryption element is mandatory for https -->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:element name="localcert" type="xs:string" minOccurs="0" maxOccurs="1"/> <!-- local cert label for server authentication -->
+																										<xs:element name="remotecert" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="sasl" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																				<xs:element name="authentication" minOccurs="0" maxOccurs="1"> <!--Authentication block mandatory for xmpp-->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="password-type" minOccurs="0" maxOccurs="1">
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:enumeration value="0"/>
+																																<xs:enumeration value="7"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																										<xs:element name="password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="server-xmpp-jid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="device-xmpp-jid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																				<xs:element name="source-interface" type="xs:string" minOccurs="0" maxOccurs="1"/> <!--source interface string sample: Vlan 10-->
+																				<xs:element name="reconnect-timer" minOccurs="0" maxOccurs="1"> <!-- how long to wait until switchover to backup-server -->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:element name="pause-in-seconds" minOccurs="1" maxOccurs="1">
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:minInclusive value="1"/>
+																																<xs:maxInclusive value="2000000"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																										<xs:element name="exponential-reconnect-factor" minOccurs="0" maxOccurs="1">
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:minInclusive value="2"/>
+																																<xs:maxInclusive value="9"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																										<xs:element name="random" fixed="" minOccurs="0" maxOccurs="1"/>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																		</xs:sequence>
+																</xs:complexType>
+														</xs:element>
+														<xs:element name="backup-server" minOccurs="0" maxOccurs="1"> <!-- backup-server in a profile -->
+																<xs:complexType>
+																		<xs:sequence>
+																				<xs:element name="protocol" minOccurs="1" maxOccurs="1">
+																						<xs:simpleType>
+																								<xs:restriction base="xs:string">
+																										<xs:enumeration value="http"/>
+																										<xs:enumeration value="https"/>
+																										<xs:enumeration value="xmpp-socket"/> <!-- No longer supported -->
+																										<xs:enumeration value="xmpp-starttls"/> <!-- No longer supported -->
+																										<xs:enumeration value="xmpp-tls"/> <!-- No longer supported -->
+																										<xs:enumeration value="capwap"/> <!-- Protocol for WLC redirection -->
+																								</xs:restriction>
+																						</xs:simpleType>
+																				</xs:element>
+																				<xs:element name="server-address" minOccurs="1" maxOccurs="1">
+																				<!-- server-address can be a <ipv4/><ipv6/> pair or a single element -->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:choice>
+																												<xs:element name="ipv4" type="xs:string"/>
+																												<xs:element name="ipv6" type="xs:string"/>
+																												<xs:element name="host" type="xs:string"/>
+																										</xs:choice>
+																										<xs:element name="port" minOccurs="0" maxOccurs="1">
+																										<!-- default port for http is 80; https is 443 -->
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:minInclusive value="1"/>
+																																<xs:maxInclusive value="65535"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																				<xs:element name="encryption" minOccurs="0" maxOccurs="1"> <!-- encryption element is mandatory for https -->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:element name="localcert" type="xs:string" minOccurs="0" maxOccurs="1"/> <!-- local cert label for server authentication -->
+																										<xs:element name="remotecert" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="sasl" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																				<xs:element name="authentication" minOccurs="0" maxOccurs="1"> <!--Authentication block mandatory for xmpp-->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																										<xs:element name="jid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																				<xs:element name="source-interface" type="xs:string" minOccurs="0" maxOccurs="1"/> <!--source interface string sample: Vlan 10-->
+																				<xs:element name="reconnect-timer" minOccurs="0" maxOccurs="1"> <!-- how long to wait until switchover to primary-server -->
+																						<xs:complexType>
+																								<xs:sequence>
+																										<xs:element name="pause-in-seconds" minOccurs="1" maxOccurs="1">
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:minInclusive value="1"/>
+																																<xs:maxInclusive value="2000000"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																										<xs:element name="exponential-reconnect-factor" minOccurs="0" maxOccurs="1">
+																												<xs:simpleType>
+																														<xs:restriction base="xs:integer">
+																																<xs:minInclusive value="2"/>
+																																<xs:maxInclusive value="9"/>
+																														</xs:restriction>
+																												</xs:simpleType>
+																										</xs:element>
+																										<xs:element name="random" fixed="" minOccurs="0" maxOccurs="1"/>
+																								</xs:sequence>
+																						</xs:complexType>
+																				</xs:element>
+																		</xs:sequence>
+																</xs:complexType>
+														</xs:element>
+												</xs:sequence>
+												<xs:attribute name="controller-type" use="optional">
+														<xs:simpleType>
+																<xs:restriction base="xs:string">
+																		<xs:enumeration value="wlc"/>  <!-- Redirection to WLC for AP -->
+																</xs:restriction>
+														</xs:simpleType>
+												</xs:attribute>
+										</xs:complexType>
+								</xs:element>
+						</xs:sequence>
+						<xs:attribute name="correlator" type="xs:string"/> <!-- for device session control -->
+				</xs:complexType>
+		</xs:element>
+		<xs:element name="response"> <!-- pnp response to pnp server -->
+				<xs:complexType>
+						<xs:sequence>
+								<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+										<xs:complexType>
+												<xs:sequence>
+														<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+																<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																				<xs:enumeration value="ERROR"/> <!-- XSVC_ERROR -->
+																				<xs:enumeration value="WARNING"/> <!-- XSVC_WARNING -->
+																		</xs:restriction>
+																</xs:simpleType>
+														</xs:element>
+														<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+																<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																				<xs:enumeration value="PnP Service Error 3100"/> <!-- XSVC_ERROR_REDIRECTION_REQ -->
+																				<xs:enumeration value="PnP Service Error 3101"/> <!-- XSVC_ERROR_REDIRECTION_INTERNAL -->
+																				<xs:enumeration value="PnP Service Error 3102"/> <!-- XSVC_ERROR_REDIR_EXT_REQ_UNSUPPORTED -->
+																				<xs:enumeration value="PnP Service Error 3103"/> <!-- XSVC_ERROR_REDIRECTION_UNSUPPORTED -->
+																				<xs:enumeration value="PnP Service Error 3104"/> <!-- XSVC_ERROR_REDIR_EXT_REQ_INVALID_REQ -->
+																				<xs:enumeration value="PnP Service Error 3105"/> <!-- XSVC_ERROR_REDIR_EXT_REQ_INVALID_PROTOCOL -->
+																				<xs:enumeration value="PnP Service Error 3106"/> <!-- XSVC_ERROR_REDIR_NO_SERVICE_DATA -->
+																				<xs:enumeration value="PnP Service Error 3107"/> <!-- XSVC_ERROR_REDIR_FAIL_NAME_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3108"/> <!-- XSVC_ERROR_REDIR_FAIL_PROFILE_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3109"/> <!-- XSVC_ERROR_REDIR_FAIL_PROFILE_CONFIG -->
+																				<xs:enumeration value="PnP Service Error 3110"/> <!-- XSVC_ERROR_REDIR_WRONG_PRIMARY_TRANSPORT -->
+																				<xs:enumeration value="PnP Service Error 3111"/> <!-- XSVC_ERROR_REDIR_FAIL_PRIMARY_TRANSPORT -->
+																				<xs:enumeration value="PnP Service Error 3112"/> <!-- XSVC_ERROR_REDIR_FAIL_PRIMARY_AUTHENTICATION -->
+																				<xs:enumeration value="PnP Service Error 3113"/> <!-- XSVC_ERROR_REDIR_FAIL_PRIMARY_RECONNECT_TIMER -->
+																				<xs:enumeration value="PnP Service Error 3114"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_HTTP_TRANSPORT -->
+																				<xs:enumeration value="PnP Service Error 3115"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_HTTPS_TRANSPORT -->
+																				<xs:enumeration value="PnP Service Error 3116"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_XMPP_TRANSPORT -->
+																				<xs:enumeration value="PnP Service Error 3117"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_XMPP_CMD_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3118"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_AUTHENTICATION -->
+																				<xs:enumeration value="PnP Service Error 3119"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_RECONNECT_TIMER -->
+																				<xs:enumeration value="PnP Service Error 3120"/> <!-- XSVC_ERROR_REDIR_FAIL_BACKUP_RECONNECT_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3121"/> <!-- XSVC_ERROR_REDIR_WRONG_IP_HOST_OPTION -->
+																				<xs:enumeration value="PnP Service Error 3122"/> <!-- XSVC_ERROR_REDIR_FAIL_ADDR_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3123"/> <!-- XSVC_ERROR_REDIR_WRONG_IPV4 -->
+																				<xs:enumeration value="PnP Service Error 3124"/> <!-- XSVC_ERROR_REDIR_WRONG_IPV6 -->
+																				<xs:enumeration value="PnP Service Error 3125"/> <!-- XSVC_ERROR_REDIR_MISSING_SERVER_ADDRESS -->
+																				<xs:enumeration value="PnP Service Error 3126"/> <!-- XSVC_ERROR_REDIR_FAIL_SOURCE_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3127"/> <!-- XSVC_ERROR_REDIR_FAIL_VRF_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3128"/> <!-- XSVC_ERROR_REDIR_FAIL_CLI_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3129"/> <!-- XSVC_ERROR_REDIR_FAIL_LOCAL_CERT_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3130"/> <!-- XSVC_ERROR_REDIR_FAIL_REMOTE_CERT_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3131"/> <!-- XSVC_ERROR_REDIR_WRONG_XMPP_TRANSPORT -->
+																				<xs:enumeration value="PnP Service Error 3132"/> <!-- XSVC_ERROR_REDIR_FAIL_SASL_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3133"/> <!-- XSVC_ERROR_REDIR_FAIL_JID_CREATE -->
+																				<xs:enumeration value="PnP Service Error 3134"/> <!-- XSVC_ERROR_REDIR_MISSING_JID -->
+																				<xs:enumeration value="PnP Service Error 3135"/> <!-- XSVC_ERROR_REDIR_WRONG_RAMDOM_CONFIG -->
+																				<xs:enumeration value="PnP Service Error 3136"/> <!-- XSVC_ERROR_REDIR_FAIL_RECONNECT_TIMER_CREATE -->
+																		</xs:restriction>
+																</xs:simpleType>
+														</xs:element>
+														<xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>
+												</xs:sequence>
+										</xs:complexType>
+								</xs:element>
+						</xs:sequence>
+						<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+						<xs:attribute name="success" use="required"> 
+						<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+								<xs:simpleType>
+										<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="1"/>
+										</xs:restriction>
+								</xs:simpleType>
+						</xs:attribute>
+				</xs:complexType>
+		</xs:element>
+</xs:schema>
+<!-- End of pnp_backoff_body.xsd -->

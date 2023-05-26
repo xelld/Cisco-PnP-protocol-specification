@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Device Info Schema Version 1.0
+ * pnp_device_info_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:device-info" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:device-info" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+	        <xs:complexType>
+			<xs:sequence>
+				<xs:element name="deviceInfo" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:attribute name="type" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="image"/> <!-- image info -->
+									<xs:enumeration value="hardware"/> <!-- hardware info -->
+									<xs:enumeration value="filesystem"/> <!-- filesystem info -->
+									<xs:enumeration value="udi"/> <!-- udi info -->
+                                    <xs:enumeration value="profile"/> <!-- profile info -->
+									<xs:enumeration value="all"/> <!-- all -->
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>		
+	</xs:element>
+	<xs:element name="response"> <!-- pnp response to pnp server -->
+		<xs:complexType>
+			<xs:choice>
+				<xs:annotation>
+					<xs:documentation>
+						When the request is invalid, value of success attribute is 0 and the response includes errorinfo tag.
+						In case of valid request response can be any one of the available types or all in case of request type 'all'.						
+					</xs:documentation>					
+				</xs:annotation>
+				<xs:sequence minOccurs="0" maxOccurs="4">
+					<xs:element name="fileSystemList" minOccurs="0" maxOccurs="1"><!-- Only if filesystem type is requested -->
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="fileSystem" minOccurs="1" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:attribute name="writable" use="required" type="xs:boolean"/>
+										<xs:attribute name="type" use="required">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="flash"/>
+													<xs:enumeration value="nvram"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+										<xs:attribute name="size" use="required" type="xs:int"/>
+										<xs:attribute name="readable" use="required" type="xs:boolean"/>
+										<xs:attribute name="name" use="required">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="bootflash"/>
+													<xs:enumeration value="nvram"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+										<xs:attribute name="freespace" use="required" type="xs:int"/>
+									</xs:complexType>				
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="udi" minOccurs="0" maxOccurs="1"><!-- Only if udi type is requested -->
+                                            <xs:complexType>
+                                              <xs:sequence>
+                                                <xs:element name="primary-chassis" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                                                <xs:element name="stacked-switch" minOccurs="0" maxOccurs="1">
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                            <xs:element name="member-udi" minOccurs="1" maxOccurs="unbounded">
+                                                               <xs:complexType>
+                                                                 <xs:simpleContent>
+                                                                   <xs:extension base="xs:string">
+                                                                      <xs:attribute name="slot" use="required" type="xs:nonNegativeInteger"/>
+                                                                   </xs:extension>
+                                                                 </xs:simpleContent>
+                                                               </xs:complexType>
+                                                            </xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                                <xs:element name="ha-device" minOccurs="0" maxOccurs="1">
+                                                   <xs:complexType>
+                                                      <xs:sequence>
+                                                        <xs:element name="standby-udi" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+                                                      </xs:sequence>
+                                                   </xs:complexType>
+                                                </xs:element>
+                                             </xs:sequence>
+                                          </xs:complexType>
+                                        </xs:element>
+					<xs:element name="hardwareInfo" minOccurs="0" maxOccurs="1"><!-- Only if harwadre-info type is requested -->
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="hostname" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="vendor" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="platformName" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="processorType" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="hwRevision" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="mainMemSize" minOccurs="0" maxOccurs="1" type="xs:integer"/>
+								<xs:element name="ioMemSize" minOccurs="0" maxOccurs="1" type="xs:integer"/>
+								<xs:element name="boardId" minOccurs="0" maxOccurs="1" type="xs:integer"/>
+								<xs:element name="boardReworkId" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="processorRev" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="midplaneVersion" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="location" minOccurs="0" maxOccurs="1" type="xs:string"/>
+								<xs:element name="deviceType" minOccurs="0" maxOccurs="1">
+                                                                         <xs:simpleType>
+                                                                                 <xs:restriction base="xs:string">
+                                                                                         <xs:enumeration value="AP"/>
+                                                                                 </xs:restriction>
+                                                                         </xs:simpleType>
+                                                                 </xs:element>
+							</xs:sequence>					
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="imageInfo" minOccurs="0" maxOccurs="1"><!-- Only if image-info type is requested -->
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="versionString" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="imageFile" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="imageHash" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="returnToRomReason" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="bootVariable" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="bootLdrVariable" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="configVariable" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="configReg" minOccurs="1" maxOccurs="1" type="xs:string"/>
+								<xs:element name="configRegNext" minOccurs="1" maxOccurs="1" type="xs:string"/>						
+							</xs:sequence>					
+						</xs:complexType>
+					</xs:element>				
+					<xs:element name="profileInfo" minOccurs="0" maxOccurs="1"><!-- Only if profile type is requested -->
+                                                <xs:complexType>
+                                                        <xs:sequence>
+                                                                <xs:element name="profile" minOccurs="1" maxOccurs="10">
+                                                                        <xs:complexType>
+        						                        <xs:sequence>
+                                                                                        <xs:element name="primary-server" minOccurs="1" maxOccurs="1">
+                                                                                                <xs:complexType>
+                                                                                                        <xs:sequence>
+                                                                                                                <xs:element name="protocol" minOccurs="1" maxOccurs="1">
+                                                                                                                        <xs:simpleType>
+                                                                                                                                <xs:restriction base="xs:string">
+                                                                                                                                        <xs:enumeration value="http"/>
+                                                                                                                                        <xs:enumeration value="https"/>
+                                                                                                                                        <xs:enumeration value="xmpp-socket"/> <!-- No longer supported -->
+                                                                                                                                        <xs:enumeration value="xmpp-starttls"/> <!-- No longer supported -->
+                                                                                                                                        <xs:enumeration value="xmpp-tls"/> <!-- No longer supported -->
+                                                                                                                                </xs:restriction>
+                                                                                                                        </xs:simpleType>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="server-address" minOccurs="1" maxOccurs="1">
+                                                                                                                        <xs:complexType>
+                                                                                                                                <xs:sequence>
+                                                                                                                                        <xs:choice>
+                                                                                                                                                <xs:element name="ipv4" type="xs:string"/>
+                                                                                                                                                <xs:element name="ipv6" type="xs:string"/>
+                                                                                                                                                <xs:element name="host" type="xs:string"/>
+                                                                                                                                        </xs:choice>
+                                                                                                                                        <xs:element name="port" minOccurs="0" maxOccurs="1">
+                                                                                                                                                <xs:simpleType>
+                                                                                                                                                        <xs:restriction base="xs:integer">
+                                                                                                                                                                <xs:minInclusive value="1"/>
+                                                                                                                                                                <xs:maxInclusive value="65535"/>
+                                                                                                                                                        </xs:restriction>
+                                                                                                                                                </xs:simpleType>
+                                                                                                                                        </xs:element>
+                                                                                                                                </xs:sequence>
+                                                                                                                         </xs:complexType>
+                                                                                                                </xs:element>
+                                                                                                        </xs:sequence>
+                                                                                                </xs:complexType>
+                                                                                        </xs:element>
+                                                                                        <xs:element name="backup-server" minOccurs="0" maxOccurs="1">
+                                                                                                <xs:complexType>
+                                                                                                        <xs:sequence>
+                                                                                                                <xs:element name="protocol" minOccurs="1" maxOccurs="1">
+                                                                                                                        <xs:simpleType>
+                                                                                                                                <xs:restriction base="xs:string">
+                                                                                                                                        <xs:enumeration value="http"/>
+                                                                                                                                        <xs:enumeration value="https"/>
+                                                                                                                                        <xs:enumeration value="xmpp-socket"/> <!-- No longer supported -->
+                                                                                                                                        <xs:enumeration value="xmpp-starttls"/> <!-- No longer supported -->
+                                                                                                                                        <xs:enumeration value="xmpp-tls"/> <!-- No longer supported -->
+                                                                                                                                </xs:restriction>
+                                                                                                                        </xs:simpleType>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="server-address" minOccurs="1" maxOccurs="1">
+                                                                                                                        <xs:complexType>
+                                                                                                                                <xs:sequence>
+                                                                                                                                        <xs:choice>
+                                                                                                                                                <xs:element name="ipv4" type="xs:string"/>
+                                                                                                                                                <xs:element name="ipv6" type="xs:string"/>
+                                                                                                                                                <xs:element name="host" type="xs:string"/>
+                                                                                                                                        </xs:choice>
+                                                                                                                                        <xs:element name="port" minOccurs="0" maxOccurs="1">
+                                                                                                                                                <xs:simpleType>
+                                                                                                                                                        <xs:restriction base="xs:integer">
+                                                                                                                                                                <xs:minInclusive value="1"/>
+                                                                                                                                                                <xs:maxInclusive value="65535"/>
+                                                                                                                                                        </xs:restriction>
+                                                                                                                                                </xs:simpleType>
+                                                                                                                                        </xs:element>
+                                                                                                                                </xs:sequence>
+                                                                                                                        </xs:complexType>
+                                                                                                                </xs:element>
+                                                                                                        </xs:sequence>                                                                                   
+                                                                                            </xs:complexType>
+                                                                                        </xs:element>																					
+							    		        </xs:sequence>
+                                                                                <xs:attribute name="profile-name" use="required" type="xs:string"/>
+									    	<xs:attribute name="discovery-created" use="required" type="xs:boolean"/>	
+                                                                                <xs:attribute name="created-by" use="required">
+					        				        <xs:simpleType>
+											        <xs:restriction base="xs:string">
+												        <xs:enumeration value="PnP-DHCP"/>
+													<xs:enumeration value="PnP-DNS"/>
+													<xs:enumeration value="PnP-CCO"/>
+													<xs:enumeration value="PnP-NAPP"/>
+													<xs:enumeration value="user"/>																	
+												</xs:restriction>
+											</xs:simpleType>
+                                                                                </xs:attribute>														
+                                                                        </xs:complexType>
+                                                                </xs:element>
+                                                        </xs:sequence>
+                                                </xs:complexType>
+                                        </xs:element>
+				</xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 1600"/> <!-- XSVC_ERROR_DEVICE_INFO_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 1601"/> <!-- XSVC_ERROR_DEVICE_INFO_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 1602"/> <!-- XSVC_ERROR_DEVICE_INFO_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1603"/> <!-- XSVC_ERROR_DEVICE_HARDWARE_INFO_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1604"/> <!-- XSVC_ERROR_DEVICE_IMAGE_INFO_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1605"/> <!-- XSVC_ERROR_DEVICE_INFO_QUEUE_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1606"/> <!-- XSVC_ERROR_DEVICE_INFO_FILESYS_QUEUE_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1607"/> <!-- XSVC_ERROR_DEVICE_IMAGE_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1608"/> <!-- XSVC_ERROR_DEVICE_HARDWARE_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1609"/> <!-- XSVC_ERROR_DEVICE_FILESYSTEM_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1610"/> <!-- XSVC_ERROR_DEVICE_INFO_RESPONSE_OBJECT_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1611"/> <!-- XSVC_ERROR_DEVICE_INFO_INVALID_REQUEST -->
+										<xs:enumeration value="PnP Service Error 1612"/> <!-- XSVC_ERROR_DEVICE_IMAGE_HW_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1613"/> <!-- XSVC_ERROR_DEVICE_IMAGE_FILESYSTEM_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1614"/> <!-- XSVC_ERROR_DEVICE_FILESYSTEM_HW_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1615"/> <!-- XSVC_ERROR_DEVICE_IMAGE_FILESYSTEM_HW_INFO_RETRIEVE -->
+										<xs:enumeration value="PnP Service Error 1616"/> <!-- XSVC_ERROR_DEVICE_UDI_INFO_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1617"/> <!-- XSVC_ERROR_DEVICE_PROFILE_INFO_MALLOC -->
+										<xs:enumeration value="PnP Service Error 1618"/> <!-- XSVC_ERROR_DEVICE_PROFILE_INFO_RETRIEVE -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_device_info_body.xsd -->

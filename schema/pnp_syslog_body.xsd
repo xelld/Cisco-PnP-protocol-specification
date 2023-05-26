@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Syslog Schema Version 1.0
+ * pnp_syslog_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:syslog" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:syslog" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+			<xs:sequence>
+                          <xs:element name="notification" minOccurs="1" maxOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+				<xs:element name="type" minOccurs="1" maxOccurs="1"><!--  -->
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="syslog"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="severity" minOccurs="1" maxOccurs="1"><!--  -->
+					<xs:simpleType>
+						<xs:restriction base="xs:integer">
+							<xs:minInclusive value="0"/>
+							<xs:maxInclusive value="7"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="recipient" type="xs:string" minOccurs="1" maxOccurs="1"/><!--  -->
+				<xs:element name="enable" type="xs:boolean" minOccurs="1" maxOccurs="1"/><!--  -->
+                               </xs:sequence>
+                             </xs:complexType>
+                           </xs:element>
+			</xs:sequence>            
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ENABLE_NTFY_REQ_ERROR"/>
+										<xs:enumeration value="XSVC_DISABLE_NTFY_REQ_ERROR"/>
+										<xs:enumeration value="XSVC_NTFY_REQ_ERROR"/>                                        
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="event">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="msg" minOccurs="1" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="rawFormat" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_syslog_body.xsd -->

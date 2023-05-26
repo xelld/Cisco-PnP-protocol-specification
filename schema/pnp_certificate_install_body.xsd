@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Certificate Install Schema Version 1.0
+ * File: pnp_certificate_install_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample Request:
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V" usr="admin" pwd="cisco">
+        <request correlator="CiscoPnP-1.0-1-11-23ADBFC-2" xmlns="urn:cisco:pnp:certificate-install">
+                <certificateInstall>
+                        <cert>
+                                <install>
+                                        <trustpoint>
+                                                <label>sjcads5252</label>
+                                                <copy>
+                                                        <source>
+                                                                <location>flash0:/sjcads5252_cert.pem</location>
+                                                        </source>
+                                                </copy>
+                                        </trustpoint>
+                                </install>
+                        </cert>
+                </certificateInstall>
+        </request>
+</pnp>
+
+Sample Response:
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V">
+        <response correlator="CiscoPnP-1.0-1-11-23ADBFC-2" success="1" xmlns="urn:cisco:pnp:certificate-install">
+        </response>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:certificate-install" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+       targetNamespace="urn:cisco:pnp:certificate-install" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="certificateInstall" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="cert" minOccurs="1" maxOccurs="1">
+                                                                               <xs:complexType>
+                                                                                 <xs:sequence>
+                                                                                    <xs:element name="set" minOccurs="0" maxOccurs="1">
+                                                                                      <xs:complexType>
+                                                                                           <xs:sequence>
+                                                                                             <xs:choice>
+                                                                                               <xs:element name="ntp">
+                                                                                                 <xs:complexType>
+                                                                                                   <xs:sequence>
+                                                                                                     <xs:element name="ip-address" minOccurs="1" maxOccurs="1" type="xs:string"/>
+                                                                                                   </xs:sequence>
+                                                                                                 </xs:complexType>
+                                                                                                </xs:element>
+                                                                                                <xs:element name="clock">
+                                                                                                 <xs:complexType>
+                                                                                                  <xs:sequence>
+                                                                                                     <xs:element name="year" minOccurs="1" maxOccurs="1">
+                                                                                                       <xs:simpleType>
+                                                                                                         <xs:restriction base="xs:integer">
+                                                                                                             <xs:minInclusive value="1993"/>
+                                                                                                              <xs:maxInclusive value="2035"/>
+                                                                                                         </xs:restriction>
+                                                                                                       </xs:simpleType>
+                                                                                                     </xs:element>
+                                                                                                     <xs:element name="month" minOccurs="1" maxOccurs="1" type="xs:string"/>
+                                                                                                     <xs:element name="day" minOccurs="1" maxOccurs="1">
+                                                                                                       <xs:simpleType>
+                                                                                                         <xs:restriction base="xs:integer">
+                                                                                                             <xs:minInclusive value="1"/>
+                                                                                                              <xs:maxInclusive value="31"/>
+                                                                                                         </xs:restriction>
+                                                                                                        </xs:simpleType>
+                                                                                                     </xs:element>
+                                                                                                     <xs:element name="hour" minOccurs="1" maxOccurs="1">
+                                                                                                       <xs:simpleType>
+                                                                                                         <xs:restriction base="xs:integer">
+                                                                                                             <xs:minInclusive value="0"/>
+                                                                                                              <xs:maxInclusive value="59"/>
+                                                                                                         </xs:restriction>
+                                                                                                       </xs:simpleType>
+                                                                                                     </xs:element>
+                                                                                                     <xs:element name="min" minOccurs="1" maxOccurs="1">
+                                                                                                      <xs:simpleType>
+                                                                                                         <xs:restriction base="xs:integer">
+                                                                                                             <xs:minInclusive value="0"/>
+                                                                                                              <xs:maxInclusive value="59"/>
+                                                                                                         </xs:restriction>
+                                                                                                       </xs:simpleType>
+                                                                                                     </xs:element>
+                                                                                                     <xs:element name="sec" minOccurs="1" maxOccurs="1">
+                                                                                                       <xs:simpleType>
+                                                                                                         <xs:restriction base="xs:integer">
+                                                                                                             <xs:minInclusive value="0"/>
+                                                                                                              <xs:maxInclusive value="59"/>
+                                                                                                         </xs:restriction>
+                                                                                                       </xs:simpleType>
+                                                                                                     </xs:element>
+                                                                                              </xs:sequence>
+                                                                                          </xs:complexType>
+                                                                                         </xs:element>
+                                                                                        </xs:choice>
+                                                                                       </xs:sequence>
+                                                                                     </xs:complexType>
+                                                                                    </xs:element>
+                                                                                    <xs:choice>
+                                                                                      <xs:element name="install">
+                                                                                          <xs:complexType>
+                                                                                           <xs:sequence>
+                                                                                              <xs:choice>
+                                                                                                 <xs:element name="trustpool">
+                                                                                                   <xs:complexType>
+                                                                                                      <xs:sequence>
+                                                                                                         <xs:element name="copy" minOccurs="1" maxOccurs="1">
+                                                                                                            <xs:complexType>
+                                                                                                              <xs:sequence>
+                                                                                                                  <xs:element name="source" minOccurs="1" maxOccurs="1">
+                                                                                                                     <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                           <xs:choice>
+                                                                                                                               <xs:element name="location" type="xs:string"/>                                                                                              
+                                                                                                                               <xs:element name="uri" type="xs:string"/>
+                                                                                                                           </xs:choice>
+                                                                                                                         </xs:sequence>
+                                                                                                                     </xs:complexType>
+                                                                                                                   </xs:element>
+                                                                                                              </xs:sequence>
+                                                                                                            </xs:complexType>
+                                                                                                         </xs:element>
+                                                                                                      </xs:sequence>
+                                                                                                   </xs:complexType>
+                                                                                                 </xs:element>
+                                                                                                 <xs:element name="trustpoint">
+                                                                                                    <xs:complexType>
+                                                                                                      <xs:sequence>
+                                                                                                                                                                                                            <xs:element name="label" minOccurs="0" maxOccurs="1" type="xs:string"/>
+                                                                                                         <xs:element name="copy" minOccurs="1" maxOccurs="1">
+                                                                                                           <xs:complexType>
+                                                                                                             <xs:sequence>
+                                                                                                               
+                                                                                                               <xs:element name="source" minOccurs="1" maxOccurs="1">                                                                                                           
+                                                                                                                 <xs:complexType>
+                                                                                                                   <xs:sequence>
+                                                                                                                      <xs:choice>
+                                                                                                                        <xs:element name="location" type="xs:string"/>
+                                                                                                                        <xs:element name="uri" type="xs:string"/>
+                                                                                                                      </xs:choice>
+                                                                                                                   </xs:sequence>
+                                                                                                                 </xs:complexType>
+                                                                                                               </xs:element>
+                                                                                                             </xs:sequence>
+                                                                                                           </xs:complexType>
+                                                                                                         </xs:element>
+                                                                                                       </xs:sequence>
+                                                                                                     </xs:complexType>
+                                                                                                 </xs:element>
+                                                                                              </xs:choice>
+                                                                                           </xs:sequence>
+                                                                                          </xs:complexType>
+                                                                                      </xs:element>
+                                                                                      <xs:element name="uninstall">
+                                                                                       <xs:complexType>
+                                                                                         <xs:sequence>
+                                                                                            <xs:choice>
+                                                                                               <xs:element name="trustpool" />
+                                                                                               <xs:element name="trustpoint">
+                                                                                                 <xs:complexType>
+                                                                                                    <xs:sequence>
+                                                                                                       <xs:element name="label" minOccurs="1" maxOccurs="1" type="xs:string"/>
+                                                                                                    </xs:sequence>
+                                                                                                 </xs:complexType>
+                                                                                               </xs:element>
+                                                                                            </xs:choice>
+                                                                                         </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                      </xs:element>
+                                                                                    </xs:choice>
+                                                                                 </xs:sequence>
+                                                                                </xs:complexType>
+                                                                             </xs:element>
+                                                                             <xs:element name="reconnect" minOccurs="0" maxOccurs="1">
+                                                                              <xs:complexType>
+                                                                               <xs:sequence> 
+                                                                                <xs:element name="primary-server" minOccurs="1" maxOccurs="1">
+                                                                                        <xs:complexType>
+                                                                                                <xs:sequence>
+                                                                                                        <xs:element name="protocol" minOccurs="1" maxOccurs="1">
+                                                                                                                        <xs:simpleType>
+                                                                                                                                                <xs:restriction base="xs:string">
+                                                                                                                                                   <xs:enumeration value="https"/>
+                                                                                                                                                   <xs:enumeration value="xmpp-starttls"/>
+                                                                                                                                                   <xs:enumeration value="xmpp-tls"/>
+                                                                                                                                                </xs:restriction>
+                                                                                                                                        </xs:simpleType>
+                                                                                                        </xs:element>
+                                                                                                        <xs:element name="server-address" minOccurs="0" maxOccurs="1">
+                                                                                                                <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                          <xs:choice>
+                                                                                                                                    <xs:element name="ipv4" type="xs:string"/>
+                                                                                                                                    <xs:element name="ipv6" type="xs:string"/>
+                                                                                                                                    <xs:element name="host" type="xs:string"/>
+                                                                                                                                </xs:choice>
+                                                                                                                                <xs:element name="port" minOccurs="0" maxOccurs="1">
+                                                                                                                                 <xs:simpleType>
+                                                                                                                                        <xs:restriction base="xs:integer">
+                                                                                                                                           <xs:minInclusive value="1"/>
+                                                                                                                                           <xs:maxInclusive value="65535"/>
+                                                                                                                                        </xs:restriction>
+                                                                                                                                </xs:simpleType>
+                                                                                                                                </xs:element>
+                                                                                                                        </xs:sequence>
+                                                                                                                </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                        <xs:element name="encryption" minOccurs="0" maxOccurs="1">
+                                                                                                                <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                                <xs:element name="localcert" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="remotecert" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="sasl" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                        </xs:sequence>
+                                                                                                                </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                        <!--Authentication block mandatory for xmpp-->
+                                                                                                        <xs:element name="authentication" minOccurs="0" maxOccurs="1">
+                                                                                                                <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                                <xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="password-type" minOccurs="0" maxOccurs="1">
+                                                                                                                                     <xs:simpleType>
+                                                                                                                                               <xs:restriction base="xs:integer">
+                                                                                                                                                   <xs:enumeration value="0"/>
+                                                                                                                                                   <xs:enumeration value="7"/>
+                                                                                                                                               </xs:restriction>
+                                                                                                                                     </xs:simpleType>
+                                                                                                                                </xs:element>
+                                                                                                                                <xs:element name="password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="server-xmpp-jid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="device-xmpp-jid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                        </xs:sequence>
+                                                                                                                </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                        <!--source interface string sample: Vlan 10-->
+                                                                                                        <xs:element name="source-interface" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                        <xs:element name="reconnect-timer" minOccurs="0" maxOccurs="1">
+                                                                                                         <xs:complexType>
+                                                                                                          <xs:sequence>
+                                                                                                            <xs:element name="pause-in-seconds" minOccurs="1" maxOccurs="1">
+                                                                                                               <xs:simpleType>
+                                                                                                                                <xs:restriction base="xs:integer">
+                                                                                                                                  <xs:minInclusive value="1"/>
+                                                                                                                                  <xs:maxInclusive value="2000000"/>
+                                                                                                                                </xs:restriction>
+                                                                                                                        </xs:simpleType>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="exponential-reconnect-factor" minOccurs="0" maxOccurs="1">
+                                                                                                                         <xs:simpleType>
+                                                                                                                                 <xs:restriction base="xs:integer">
+                                                                                                                                     <xs:minInclusive value="2"/>
+                                                                                                                                     <xs:maxInclusive value="9"/>
+                                                                                                                                </xs:restriction>
+                                                                                                                         </xs:simpleType>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="random" fixed="" minOccurs="0" maxOccurs="1">
+                                                                                                                </xs:element>
+                                                                                                         </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                </xs:sequence>
+                                                                                        </xs:complexType>
+                                                                                </xs:element>
+                                                                                <xs:element name="backup-server" minOccurs="0" maxOccurs="1">
+                                                                                         <xs:complexType>
+                                                                                                <xs:sequence>
+                                                                                                        <xs:element name="protocol" minOccurs="1" maxOccurs="1">
+                                                                                                                        <xs:simpleType>
+                                                                                                                                                <xs:restriction base="xs:string">
+                                                                                                                                                   <xs:enumeration value="http"/>
+                                                                                                                                                   <xs:enumeration value="https"/>
+                                                                                                                                                   <xs:enumeration value="xmpp-socket"/>
+                                                                                                                                                   <xs:enumeration value="xmpp-starttls"/>
+                                                                                                                                                   <xs:enumeration value="xmpp-tls"/>
+                                                                                                                                                </xs:restriction>
+                                                                                                                                        </xs:simpleType>
+                                                                                                        </xs:element>
+                                                                                                        <xs:element name="server-address" minOccurs="0" maxOccurs="1">
+                                                                                                                <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                          <xs:choice>
+                                                                                                                                    <xs:element name="ipv4" type="xs:string"/>
+                                                                                                                                    <xs:element name="ipv6" type="xs:string"/>
+                                                                                                                                    <xs:element name="host" type="xs:string"/>
+                                                                                                                                </xs:choice>
+                                                                                                                                <xs:element name="port" minOccurs="0" maxOccurs="1">
+                                                                                                                                 <xs:simpleType>
+                                                                                                                                        <xs:restriction base="xs:integer">
+                                                                                                                                           <xs:minInclusive value="1"/>
+                                                                                                                                           <xs:maxInclusive value="65535"/>
+                                                                                                                                        </xs:restriction>
+                                                                                                                                </xs:simpleType>
+                                                                                                                                </xs:element>
+                                                                                                                        </xs:sequence>
+                                                                                                                </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                        <xs:element name="encryption" minOccurs="0" maxOccurs="1">
+                                                                                                                <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                                <xs:element name="localcert" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="remotecert" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="sasl" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                        </xs:sequence>
+                                                                                                                </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                        <!--Authentication block mandatory for xmpp-->
+                                                                                                        <xs:element name="authentication" minOccurs="0" maxOccurs="1">
+                                                                                                                <xs:complexType>
+                                                                                                                        <xs:sequence>
+                                                                                                                                <xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                                <xs:element name="jid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                                        </xs:sequence>
+                                                                                                                </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                        <!--source interface string sample: Vlan 10-->
+                                                                                                        <xs:element name="source-interface" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                                                                                        <xs:element name="reconnect-timer" minOccurs="0" maxOccurs="1">
+                                                                                                         <xs:complexType>
+                                                                                                          <xs:sequence>
+                                                                                                            <xs:element name="pause-in-seconds" minOccurs="1" maxOccurs="1">
+                                                                                                               <xs:simpleType>
+                                                                                                                                <xs:restriction base="xs:integer">
+                                                                                                                                  <xs:minInclusive value="1"/>
+                                                                                                                                  <xs:maxInclusive value="2000000"/>
+                                                                                                                                </xs:restriction>
+                                                                                                                        </xs:simpleType>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="exponential-reconnect-factor" minOccurs="0" maxOccurs="1">
+                                                                                                                         <xs:simpleType>
+                                                                                                                                 <xs:restriction base="xs:integer">
+                                                                                                                                     <xs:minInclusive value="2"/>
+                                                                                                                                     <xs:maxInclusive value="9"/>
+                                                                                                                                </xs:restriction>
+                                                                                                                         </xs:simpleType>
+                                                                                                                </xs:element>
+                                                                                                                <xs:element name="random" fixed="" minOccurs="0" maxOccurs="1">
+                                                                                                                </xs:element>
+                                                                                                         </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                        </xs:element>
+                                                                                                </xs:sequence>
+                                                                                        </xs:complexType>
+                                                                                </xs:element>
+                                                                              </xs:sequence>
+                                                                             </xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+                                          <xs:complexType>
+                                               <xs:sequence>
+                                                     <xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+                                                          <xs:simpleType>
+                                                              <xs:restriction base="xs:string">
+                                                                     <xs:enumeration value="XSVC_ERROR"/>
+                                                              </xs:restriction>
+                                                          </xs:simpleType>
+                                                      </xs:element>
+                                                      <xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+                                                          <xs:simpleType>
+                                                                <xs:restriction base="xs:string">
+                                                                      <xs:enumeration value="PnP Service Error 3300"/> <!-- XSVC_ERROR_CERT_INSTALL_REQ-->
+                                                                      <xs:enumeration value="PnP Service Error 3301"/> <!--XSVC_ERROR_CERT_INSTALL_MULTIPLE_SERVER_ADDR-->
+                                                                      <xs:enumeration value="PnP Service Error 3302"/> <!--XSVC_ERROR_CERT_INSTALL_MALLOC-->
+                                                                      <xs:enumeration value="PnP Service Error 3303"/> <!--XSVC_ERROR_CERT_INSTALL_INVALID_XMPP-->
+                                                                      <xs:enumeration value="PnP Service Error 3304"/> <!--XSVC_ERROR_CERT_INSTALL_SERVER_JID_MISSING-->
+                                                                      <xs:enumeration value="PnP Service Error 3305"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_RECONNECT_TIMER-->
+                                                                      <xs:enumeration value="PnP Service Error 3306"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_PRIMARY_TRANSPORT-->
+                                                                      <xs:enumeration value="PnP Service Error 3307"/> <!--XSVC_ERROR_CERT_INSTALL_BLOCKING_MODE-->
+                                                                      <xs:enumeration value="PnP Service Error 3308"/> <!--XSVC_ERROR_CERT_INSTALL_NTP_NOT_CONFIGURED-->
+                                                                      <xs:enumeration value="PnP Service Error 3309"/> <!--XSVC_ERROR_CERT_INSTALL_CLOCK_NOT_SET-->
+                                                                      <xs:enumeration value="PnP Service Error 3310"/> <!--XSVC_ERROR_CERT_INSTALL_XSVC_NULL-->
+                                                                      <xs:enumeration value="PnP Service Error 3311"/> <!--XSVC_ERROR_CERT_INSTALL_MULTIPLE_CLOCK_TYPE-->
+                                                                      <xs:enumeration value="PnP Service Error 3312"/> <!--XSVC_ERROR_CERT_INSTALL_TRUSTPOOL_NOT_CONFIGURED-->
+                                                                      <xs:enumeration value="PnP Service Error 3313"/> <!--XSVC_ERROR_CERT_INSTALL_TRUSTPOINT_NOT_CONFIGURED-->
+                                                                      <xs:enumeration value="PnP Service Error 3314"/> <!--XSVC_ERROR_CERT_INSTALL_TRUSTPOOL_NOT_UNCONFIGURED-->
+                                                                      <xs:enumeration value="PnP Service Error 3315"/> <!--XSVC_ERROR_CERT_INSTALL_TRUSTPOINT_NOT_UNCONFIGURED-->
+                                                                      <xs:enumeration value="PnP Service Error 3316"/> <!--XSVC_ERROR_CERT_INSTALL_INVALID_PROFILE_NAME-->
+                                                                      <xs:enumeration value="PnP Service Error 3317"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_ALLOC_RECONFIG -->
+                                                                      <xs:enumeration value="PnP Service Error 3318"/> <!--XSVC_ERROR_CERT_INSTALL_STALE_RECONFIG_DATA-->
+                                                                      <xs:enumeration value="PnP Service Error 3319"/> <!--XSVC_ERROR_CERT_INSTALL_INVALID_CMD_PROFILE-->
+                                                                      <xs:enumeration value="PnP Service Error 3320"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_PRIMARY_AUTHEN-->
+                                                                      <xs:enumeration value="PnP Service Error 3321"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_PRIMARY_RECONNECT-->
+                                                                      <xs:enumeration value="PnP Service Error 3322"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_BACKUP_TRANSPORT-->
+                                                                      <xs:enumeration value="PnP Service Error 3323"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_BACKUP_AUTHEN -->
+                                                                      <xs:enumeration value="PnP Service Error 3324"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_BACKUP_RECONNECT-->
+                                                                      <xs:enumeration value="PnP Service Error 3325"/> <!--XSVC_ERROR_CERT_INSTALL_WRONG_IP_TYPE-->
+                                                                      <xs:enumeration value="PnP Service Error 3326"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_SET_PROFILE_CMD -->
+                                                                      <xs:enumeration value="PnP Service Error 3327"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_FORMAT_URL-->
+                                                                      <xs:enumeration value="PnP Service Error 3328"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_START_PKI_SESSION-->
+                                                                      <xs:enumeration value="PnP Service Error 3329"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_END_PKI_SESSION-->
+                                                                      <xs:enumeration value="PnP Service Error 3330"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_CHECK_REVOCATION-->
+                                                                      <xs:enumeration value="PnP Service Error 3331"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_IMPORT_CA_CERT-->
+                                                                      <xs:enumeration value="PnP Service Error 3332"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_IMPORT_TRUSTPOOL-->
+                                                                      <xs:enumeration value="PnP Service Error 3333"/> <!--XSVC_ERROR_CERT_INSTALL_FAIL_TO_IMPORT_TRUSTPOOL-->
+                                                                      <xs:enumeration value="PnP Service Error 3334"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_DELETE_TRUSTPOINT-->
+                                                                      <xs:enumeration value="PnP Service Error 3335"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_DELETE_TRUSTPOOL-->
+                                                                      <xs:enumeration value="PnP Service Error 3336"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_FIND_REPLACEMENT-->
+                                                                      <xs:enumeration value="PnP Service Error 3337"/> <!--XSVC_ERROR_CERT_INSTALL_CANT_GET_HELLO_REPONSE-->
+                                                                </xs:restriction>
+                                                          </xs:simpleType>
+                                                      </xs:element>
+                                                        <xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>
+                                                </xs:sequence>
+                                        </xs:complexType>
+                                </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- pnp_certificate_install_body.xsd -->

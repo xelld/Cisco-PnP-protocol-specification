@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP NAPP Server Schema Version 1.0
+ * pnp_napp_server_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+
+Sample request-
+PnP server request sent to disable NAPP server
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437">
+        <request xmlns="urn:cisco:pnp:napp-server" correlator="CiscoPnP-1.0-1-11-14A9C6D0-2">
+            <napp-server>
+              <disable-napp/>
+            </napp-server>
+        </request>
+</pnp>
+
+PnP server request sent to enable NAPP server
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437">
+        <request xmlns="urn:cisco:pnp:napp-server" correlator="CiscoPnP-1.0-1-11-14A9C6D0-2">
+            <napp-server>
+              <enable-napp />
+            </napp-server>
+        </request>
+</pnp>
+
+
+Response sent by NAPP server to PnP server in response to NAPP server request
+
+
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437">
+        <response correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:napp-server">
+            <service-response-status>
+                <transaction-status>TRANSACTION SUCCESSFUL</transaction-status>
+                <error-status>PROXY CLIENT CONFIGURATION SUCCESS</error-status>
+                <error-message>PROXY CLIENT configuration successful</error-message>
+            </service-response-status>
+        </response>
+</pnp>
+
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svc="urn:cisco:pnp:napp-server" targetNamespace="urn:cisco:pnp">
+	<xs:import namespace="urn:cisco:pnp:napp-server" schemaLocation="pnp_napp_server_body.xsd"/>
+	<xs:element name="pnp">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="svc:request"/>
+				<xs:element ref="svc:response"/>
+			</xs:choice>
+			<xs:attribute name="version" fixed="1.0" use="required"/>  <!-- version control specified by PnP Agent -->
+			<xs:attribute name="udi" type="xs:string" use="required"/> <!-- device udi specified by PnP Agent -->
+			<xs:attribute name="sid" type="xs:string" use="optional"/> <!-- session id specified by PnP Server -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_napp_server_svc.xsd -->

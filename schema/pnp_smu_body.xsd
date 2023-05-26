@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP SMU Schema Version 1.0
+ * pnp_smu_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:smu" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:smu" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="smu" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:choice>
+								<xs:element name="smuManagement" minOccurs="0" maxOccurs="1">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="smuBundle" minOccurs="0" maxOccurs="32">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/> <!-- SMU name be copied on flash: -->
+														<xs:element name="checksum" type="xs:string" minOccurs="0" maxOccurs="1"/>
+														<xs:choice>
+															<xs:sequence>
+																<xs:element name="add" minOccurs="0" maxOccurs="1">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:choice>
+																				<xs:element name="location" type="xs:string"/> 
+																				<xs:element name="uri" type="xs:string"/>
+																			</xs:choice>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>		
+																<xs:element name="activate" minOccurs="0" maxOccurs="1" fixed=""/> <!-- Reload required -->
+															</xs:sequence>
+															<xs:sequence>
+																<xs:element name="deactivate" minOccurs="0" maxOccurs="1" fixed=""/> <!-- Reload and commit required -->
+																<xs:element name="remove" minOccurs="0" maxOccurs="1" fixed=""/>
+															</xs:sequence>
+														</xs:choice>										
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="action-on-fail" use="optional" default="stop">
+											<xs:annotation>
+                        									<xs:documentation>
+                            									Which action to take if SMU Add fails. 
+                            									stop: stop adding more SMUs and error out
+                            									continue: continue adding other SMUs in the list
+                            									rollback: stop adding more SMUs after first error and remove added SMUs
+                        									</xs:documentation>
+                    									</xs:annotation>
+                    									<xs:simpleType>
+                        									<xs:restriction base="xs:string">
+                            									<xs:enumeration value="stop"/>
+                            									<xs:enumeration value="continue"/>
+                            									<xs:enumeration value="rollback"/>
+                        									</xs:restriction>
+                    									</xs:simpleType>
+                								</xs:attribute>
+                							</xs:complexType>
+								</xs:element>
+								<xs:element name="smuInfo" minOccurs="0" maxOccurs="1" fixed=""/> 
+								<xs:element name="commit" minOccurs="0" maxOccurs="1" fixed=""/>
+								<xs:element name="rollback" minOccurs="0" maxOccurs="1">
+									<xs:complexType>
+										<xs:choice>
+											<xs:element name="base" fixed=""/>
+											<xs:element name="lastCommitted" fixed=""/>
+											<xs:element name="id" type="xs:string"/>
+										</xs:choice>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="rollbackIdInfo" minOccurs="0" maxOccurs="1" fixed=""/>
+							</xs:choice>
+							<xs:choice>
+								<xs:element name="reload">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="reason" type="xs:string" minOccurs="0" maxOccurs="1"/>
+											<xs:element name="delayIn" type="xs:int" minOccurs="0" maxOccurs="1"/>
+											<xs:element name="user" type="xs:string" minOccurs="0" maxOccurs="1"/>
+											<xs:element name="saveConfig" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+										</xs:sequence>
+									</xs:complexType>					
+								</xs:element>
+								<xs:element name="noReload" fixed=""/>
+								<xs:element name="commitNoReload" fixed=""/>
+							</xs:choice>
+						</xs:sequence>
+						<xs:attribute name="details">
+							<xs:annotation>
+								<xs:documentation>
+									Use this attribute to control the level of error details reported.
+								</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="brief"/>
+									<xs:enumeration value="errors"/>
+									<xs:enumeration value="all"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response"> <!-- pnp response to pnp server -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/> <!-- XSVC_ERROR -->
+										<xs:enumeration value="WARNING"/> <!-- XSVC_WARNING -->									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 3700"/> <!-- XSVC_ERROR_SMU_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 3701"/> <!-- XSVC_ERROR_SMU_INSTALL_NOT_SUPPORTED -->
+										<xs:enumeration value="PnP Service Error 3702"/> <!-- XSVC_ERROR_SMU_INVALID_SEQUENCE -->
+										<xs:enumeration value="PnP Service Error 3703"/> <!-- XSVC_ERROR_SMU_SRC_NOT_PROVIDED -->
+										<xs:enumeration value="PnP Service Error 3704"/> <!-- XSVC_ERROR_SMU_SRC_NOT_FOUND -->
+										<xs:enumeration value="PnP Service Error 3705"/> <!-- XSVC_ERROR_SMU_CONFREG_SET_TO_0x0 -->
+										<xs:enumeration value="PnP Service Error 3706"/> <!-- XSVC_ERROR_SMU_RELOAD_INPUT_ERROR -->
+										<xs:enumeration value="PnP Service Error 3707"/> <!-- XSVC_ERROR_SMU_NO_RELOAD_IN_PROGRESS -->
+										<xs:enumeration value="PnP Service Error 3708"/> <!-- XSVC_ERROR_SMU_UNKNOWN_RELOAD_ERROR -->
+										<xs:enumeration value="PnP Service Error 3709"/> <!-- XSVC_ERROR_SMU_INSTALL_ADD_FAILED -->
+										<xs:enumeration value="PnP Service Error 3710"/> <!-- XSVC_ERROR_SMU_INSTALL_ACTIVATE_FAILED -->
+										<xs:enumeration value="PnP Service Error 3711"/> <!-- XSVC_ERROR_SMU_INSTALL_COMMIT_FAILED -->
+										<xs:enumeration value="PnP Service Error 3712"/> <!-- XSVC_ERROR_SMU_INSTALL_DEACTIVATE_FAILED -->
+										<xs:enumeration value="PnP Service Error 3713"/> <!-- XSVC_ERROR_SMU_INSTALL_REMOVE_FAILED -->
+										<xs:enumeration value="PnP Service Error 3714"/> <!-- XSVC_ERROR_SMU_INSTALL_ROLLBACK_FAILED -->
+										<xs:enumeration value="PnP Service Error 3715"/> <!-- XSVC_ERROR_SMU_QUERY_FAILED -->
+										<xs:enumeration value="PnP Service Error 3716"/> <!-- XSVC_ERROR_RBP_QUERY_FAILED -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="smuFail" minOccurs="0" maxOccurs="1"> <!-- Displays which smu has failed -->
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="smuName" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="rollbackInfo" minOccurs="0" maxOccurs="1"> <!-- for rollback ID Info output-->
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="rollbackPoint" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="smuInfo" minOccurs="0" maxOccurs="1"> <!-- for smuInfo output-->
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="smuBundle" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="smuName" minOccurs="1" maxOccurs="1" type="xs:string"/>
+										<xs:element name="smuState" minOccurs="1" maxOccurs="1">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Inactive"/>
+													<xs:enumeration value="Activated-Committed"/>
+													<xs:enumeration value="Activated-Uncommitted"/>
+													<xs:enumeration value="Deactivated-UnCommitted"/>
+												</xs:restriction>									
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>	
+			</xs:sequence>
+                        <xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+                        <xs:attribute name="success" use="required">
+                                <!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+                                <xs:simpleType>
+                                        <xs:restriction base="xs:integer">
+                                                <xs:minInclusive value="0"/>
+                                                <xs:maxInclusive value="1"/>
+                                        </xs:restriction>
+                                </xs:simpleType>
+                        </xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_smu_body.xsd -->

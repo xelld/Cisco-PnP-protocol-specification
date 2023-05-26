@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP NAPP Schema Version 1.0
+ * pnp_napp_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+
+Sample request-
+Configlet request sent by PnP server :
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437">
+	<request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:napp">
+            <napp-device-info>
+                <udi>PID:WS-C3750E-24TD,VID:V03,SN:FDO1332R0R8</udi>
+            </napp-device-info>
+            <query>
+                <configlet>hos72.27.176.164 255.255.255.0; no shut; end</configlet>
+            </query>
+        </request>
+</pnp>
+
+Response sent by NAPP device(server) to PNP server"
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437">
+        <response correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:napp" success="1"/>
+</pnp>    
+
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svc="urn:cisco:pnp:napp" targetNamespace="urn:cisco:pnp">
+	<xs:import namespace="urn:cisco:pnp:napp" schemaLocation="pnp_napp_body.xsd"/>
+	<xs:element name="pnp">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="svc:request"/>
+				<xs:element ref="svc:response"/>
+			</xs:choice>
+			<xs:attribute name="version" fixed="1.0" use="required"/>  <!-- version control specified by PnP Agent -->
+			<xs:attribute name="udi" type="xs:string" use="required"/> <!-- device udi specified by PnP Agent -->
+			<xs:attribute name="sid" type="xs:string" use="optional"/> <!-- session id specified by PnP Server -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_napp_svc.xsd -->

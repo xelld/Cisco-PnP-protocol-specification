@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP SMU Schema Version 1.0
+ * pnp_smu_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+	<request xmlns="urn:cisco:pnp:smu" correlator="CiscoPnP-1.0-1-11-14A9C6D0-2">
+       <smu>
+            <smuManagement>
+                <smuBundle>
+                    <name>smu1.bin</name>
+                    <add>
+                        <location>tftp://172.19.153.133/tmp/cat3k_caa-universalk9.0.CSCvc55320.SSA.smu.bin</location>
+                        <checksum>f06ec15eba6f856b361a480a8f9ca606</checksum>
+                    </add>
+                    <activate><activate/>
+                <smuBundle>
+            </smuManagement>
+            <reload>
+                <reason>SMU Activate</reason>
+                <delayIn>120</delayIn>
+                <user>test</user>
+                <saveConfig>true</saveConfig>
+            </reload>
+        </smu>
+    </request>
+</pnp>
+
+ *************************************************
+-->
+
+<xs:schema xmlns="urn:cisco:pnp" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svc="urn:cisco:pnp:smu" targetNamespace="urn:cisco:pnp">
+	<xs:import namespace="urn:cisco:pnp:smu" schemaLocation="pnp_smu_body.xsd"/>
+	<xs:simpleType name="NoCheckTime">
+		<xs:restriction base="xs:positiveInteger">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="180"/>
+		</xs:restriction>
+	</xs:simpleType>
+        <xs:element name="pnp">
+                <xs:complexType>
+                        <xs:choice>
+                                <xs:element ref="svc:request" minOccurs="1" maxOccurs="1"/>
+                                <xs:element ref="svc:response" minOccurs="1" maxOccurs="1"/>
+                        </xs:choice>
+                        <xs:attribute name="version" type="xs:string" fixed="1.0" use="required"/>
+                        <xs:attribute name="udi" type="xs:string" use="required"/>
+                        <xs:attribute name="usr" type="xs:string" use="optional"/>
+                        <xs:attribute name="pwd" type="xs:string" use="optional"/>
+                        <!-- noCheckTime in minutes, minimum 1, maximum 180 -->
+                        <xs:attribute name="noCheckTime" type="NoCheckTime" use="optional"/>
+                        <xs:attribute name="postReloadPriv" type="xs:string" fixed="ztd" use="optional"/>
+                </xs:complexType>
+        </xs:element>
+</xs:schema>
+<!-- End of pnp_smu_svc.xsd -->

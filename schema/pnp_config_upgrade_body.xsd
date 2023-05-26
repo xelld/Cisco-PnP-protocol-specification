@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Config Upgrade Schema Version 1.0
+ * pnp_config_upgrade_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15" noCheckTime="20" postReloadPriv="ztd">
+        <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:config-upgrade">
+                <config>
+                        <copy>
+                                <source>
+                                        <location>tftp://172.19.211.47//tftpboot/rouppala/test_cfg</location>
+                                        <checksum>f4c14103bdb911a7d3982a1fd02cb2df</checksum>
+                                </source>
+                                <applyTo>startup</applyTo>
+                        </copy>
+                </config>
+                <reload>
+                        <reason>none</reason>
+                        <delayIn>120</delayIn>
+                        <user>test</user>
+                </reload>
+        </request>
+</pnp>
+
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:config-upgrade" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:config-upgrade" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="config">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="copy">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="source" minOccurs="1" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:choice>
+														<xs:element name="location" type="xs:string"/>
+														<xs:element name="uri" type="xs:string"/>
+													</xs:choice>
+													<xs:element name="checksum" type="xs:string" minOccurs="0" maxOccurs="1"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+                                                                                <xs:element name="applyTo" minOccurs="0" maxOccurs="1">
+                                                                                        <xs:simpleType>
+                                                                                               <xs:restriction base="xs:string">
+                                                                                                        <xs:enumeration value="startup"/>
+                                                                                                        <xs:enumeration value="running"/>
+                                                                                                        <xs:enumeration value="AP"/>
+                                                                                               </xs:restriction>
+                                                                                        </xs:simpleType>
+                                                                                </xs:element>
+										<xs:element name="abortOnSyntaxFault" fixed=""/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+							<xs:attribute name="details">
+							<xs:annotation>
+								<xs:documentation>
+									Use this attribute to control the level of error details reported.
+								</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="brief"/>
+									<xs:enumeration value="errors"/>
+									<xs:enumeration value="all"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>				
+				</xs:element>
+				<xs:choice>
+					<xs:element name="reload">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="reason" type="xs:string" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="delayIn" type="xs:int" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="user" type="xs:string" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="saveConfig" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+							</xs:sequence>
+						</xs:complexType>					
+					</xs:element>
+					<xs:element name="noReload" fixed=""/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 1400"/> <!-- XSVC_ERROR_CONFIG_UPGRADE INTERNAL -->
+										<xs:enumeration value="PnP Service Error 1401"/> <!-- XSVC_ERROR_CONFIG_UPGRADE_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 1402"/> <!-- XSVC_APPLY_CFG_REQ_ERROR -->
+										<xs:enumeration value="PnP Service Error 1403"/> <!-- XSVC_APPLY_CFG_HASH_FAILED -->
+										<xs:enumeration value="PnP Service Error 1404"/> <!-- XSVC_APPLY_CFG_COPY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1405"/> <!-- XSVC_APPLY_CFG_FILE_TYPE_FAILED -->
+										<xs:enumeration value="PnP Service Error 1406"/> <!-- XSVC_ERROR_CFG_CONFREG_SET_TO_0x0 -->
+										<xs:enumeration value="PnP Service Error 1407"/> <!-- XSVC_ERROR_CFG_STARTUP_CFG_COPY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1408"/> <!-- XSVC_ERROR_CFG_EXT_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 1409"/> <!-- XSVC_ERROR_CFG_NO_SERVICE_DATA -->
+										<xs:enumeration value="PnP Service Error 1410"/> <!-- XSVC_ERROR_CFG_SYNTAX_ERROR -->
+										<xs:enumeration value="PnP Service Error 1411"/> <!-- XSVC_ERROR_CFG_CONFIG_LOCKED -->
+										<xs:enumeration value="PnP Service Error 1412"/> <!-- XSVC_ERROR_CFG_RUNNING_CFG_COPY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1413"/> <!-- XSVC_ERROR_CFG_INVALID_INPUT_DETECTED -->
+										<xs:enumeration value="PnP Service Error 1414"/> <!-- XSVC_ERROR_CFG_BOOT_MANUAL_CONFIGURED -->
+										<xs:enumeration value="PnP Service Error 1415"/> <!-- XSVC_ERROR_CFG_CAN_NOT_RELOAD -->
+										<xs:enumeration value="PnP Service Error 1416"/> <!-- XSVC_ERROR_CFG_INVALID_SRC_CONFIG_FILE -->
+										<xs:enumeration value="PnP Service Error 1417"/> <!-- XSVC_ERROR_CFG_INVALID_STARTUP_ACCESS -->
+										<xs:enumeration value="PnP Service Error 1418"/> <!-- XSVC_ERROR_CFG_INVALID_RUNNING_ACCESS -->
+										<xs:enumeration value="PnP Service Error 1419"/> <!-- XSVC_ERROR_CFG_CANT_START_BACKUP -->
+										<xs:enumeration value="PnP Service Error 1420"/> <!-- XSVC_ERROR_CFG_CANT_UPGRADE_STARTUP_VIA_BACKUP -->
+										<xs:enumeration value="PnP Service Error 1421"/> <!-- XSVC_ERROR_CFG_CANT_UPGRADE_STARTUP_DIRECTLY -->
+										<xs:enumeration value="PnP Service Error 1422"/> <!-- XSVC_ERROR_CFG_CANT_UPGRADE_RUNNING_VIA_BACKUP -->
+										<xs:enumeration value="PnP Service Error 1423"/> <!-- XSVC_ERROR_CFG_CANT_UPGRADE_RUNNING_DIRECTLY -->
+										<xs:enumeration value="PnP Service Error 1424"/> <!-- XSVC_ERROR_CFG_CANT_MALLOC_ACTION_VTY -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<!-- service log is the raw vty output captured which might need special XML-escape handling -->
+				<xs:element name="serviceLog" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_config_upgrade_body.xsd -->

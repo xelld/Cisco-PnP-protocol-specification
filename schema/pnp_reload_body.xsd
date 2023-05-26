@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Reload Schema Version 1.0
+ * File: pnp_reload_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+        <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:reload">
+                <reload>
+                        <reason>PnP Recovery</reason>
+                        <delayIn>30</delayIn>
+                        <user>APIC-EM PnP Service</user>
+                        <saveConfig>true</saveConfig>
+                </reload>
+        </request>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:reload" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:reload" elementFormDefault="qualified" attributeFormDefault="unqualified">	
+	<xs:element name="request"> <!-- pnp request from pnp server -->
+		<xs:complexType>
+                        <xs:sequence>
+                                <xs:element name="reload" minOccurs="1" maxOccurs="1">
+                                        <xs:complexType>
+						<xs:sequence>
+							<xs:element name="reason" type="xs:string" minOccurs="0" maxOccurs="1"/> <!-- reason to reload this device -->
+							<xs:element name="delayIn" minOccurs="0" maxOccurs="1"> <!-- delay in seconds to allow final ack to go back to server -->
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="0"/>
+										<xs:maxInclusive value="2147483"/>
+									</xs:restriction>
+								</xs:simpleType>	
+							</xs:element>
+							<xs:element name="user" type="xs:string" minOccurs="0" maxOccurs="1"/> <!-- who is reloading -->
+							<xs:choice minOccurs="0" maxOccurs="1">
+								<xs:element name="saveConfig" type="xs:boolean"/> <!-- true of false to save startup config before reload -->
+								<xs:element name="eraseConfig" type="xs:boolean"/> <!-- true of false to erase startup config before reload -->
+							</xs:choice>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>			
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response"> <!-- pnp response to pnp server -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="ERROR"/>									
+										<xs:enumeration value="WARNING"/>									
+										<xs:enumeration value="INFO"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1"> <!-- xml service error -->
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 2400"/> <!-- XSVC_ERROR_RELOAD_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 2401"/> <!-- XSVC_ERROR_RELOAD_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 2402"/> <!-- XSVC_ERROR_RELOAD_NO_SERVICE_DATA -->
+										<xs:enumeration value="PnP Service Error 2403"/> <!-- XSVC_ERROR_RELOAD_FAIL_REASON_CREATE -->
+										<xs:enumeration value="PnP Service Error 2404"/> <!-- XSVC_ERROR_RELOAD_FAIL_USER_CREATE -->
+										<xs:enumeration value="PnP Service Error 2405"/> <!-- XSVC_ERROR_RELOAD_FAIL_CONFIG_SAVE -->
+										<xs:enumeration value="PnP Service Error 2406"/> <!-- XSVC_ERROR_RELOAD_FAIL_RELOAD_OP -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>			
+			</xs:sequence>			
+			<xs:attribute name="correlator" use="required" type="xs:string"/> <!-- for device session control -->
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>		
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_reload_body.xsd -->

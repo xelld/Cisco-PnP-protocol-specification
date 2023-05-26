@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP File Transfer Schema Version 1.0
+ * File: pnp_file_transfer_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+    <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:file-transfer">
+        <fileTransfer>
+            <copy>
+                <source>
+                    <location>tftp://171.69.17.19/test/c7200-ipbasek9-mz</location>
+                </source>
+                <destination>
+                    <location>disk0:c7200-ipbasek9-mz</location>
+                </destination>
+            </copy>
+        </fileTransfer>
+    </request>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svc="urn:cisco:pnp:file-transfer" targetNamespace="urn:cisco: pnp">
+    <xs:import namespace="urn:cisco:pnp:file-transfer" schemaLocation="pnp_file_transfer_body.xsd"/>
+        <xs:element name="pnp">
+                <xs:complexType>
+                        <xs:choice>
+                                <xs:element ref="svc:request" minOccurs="1" maxOccurs="1"/>
+                                <xs:element ref="svc:response" minOccurs="1" maxOccurs="1"/>
+                        </xs:choice>
+            <xs:attribute name="version" fixed="1.0" use="required"/>  <!-- version control specified by PnP Agent -->
+            <xs:attribute name="udi" type="xs:string" use="required"/> <!-- device udi specified by PnP Agent -->
+            <xs:attribute name="sid" type="xs:string" use="optional"/> <!-- session id specified by PnP Server -->
+            <xs:attribute name="usr" type="xs:string" use="optional"/> <!-- device login user specified by PnP Server -->
+            <xs:attribute name="pwd" type="xs:string" use="optional"/> <!-- device login password specified by PnP Server -->
+                </xs:complexType>
+        </xs:element>
+</xs:schema>
+<!-- End of pnp_file_transfer_svc.xsd -->

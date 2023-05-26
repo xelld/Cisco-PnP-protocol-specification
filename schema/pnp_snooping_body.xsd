@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Snooping Schema Version 1.0
+ * pnp_snooping_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:snooping" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:snooping" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request"><!-- PnP Snooping Request -->
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element name="snooping" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:choice>
+							<xs:element name="enableSnooping">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="op43Str" type="xs:string" minOccurs="1" maxOccurs="1"/>
+										<xs:element name="vlanId" minOccurs="0" maxOccurs="1" type="xs:integer"/>
+										<xs:element name="trustedInterfaces" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="interfaces" type="xs:string" minOccurs="1" maxOccurs="100"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="mustOverwrite" fixed="" type="xs:string" minOccurs="0" maxOccurs="1"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="disableSnooping">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="vlanId" minOccurs="0" maxOccurs="1" type="xs:integer"/>
+										<xs:element name="unTrustedInterfaces" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="interfaces" type="xs:string" minOccurs="1" maxOccurs="100"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>                
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:annotation>
+			<xs:documentation>PnP Snooping Response</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 2700"/> <!-- XSVC_ERROR_SNOOPING_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 2701"/> <!-- XSVC_ERROR_SNOOPING_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 2702"/> <!-- XSVC_ERROR_SNOOP_REQ -->
+										<xs:enumeration value="PnP Service Error 2703"/> <!-- XSVC_ERROR_SNOOP_PARSING -->
+										<xs:enumeration value="PnP Service Error 2704"/> <!-- XSVC_ERROR_SNOOP_TRUST_VLANID_DOWN -->
+										<xs:enumeration value="PnP Service Error 2705"/> <!-- XSVC_ERROR_SNOOP_UNTRUST_VLANID_DOWN -->
+										<xs:enumeration value="PnP Service Error 2706"/> <!-- XSVC_ERROR_SNOOP_TRUST_INTF_DOWN -->
+										<xs:enumeration value="PnP Service Error 2707"/> <!-- XSVC_ERROR_SNOOP_TRUST_INTF_FAILED -->
+										<xs:enumeration value="PnP Service Error 2708"/> <!-- XSVC_ERROR_SNOOP_TRUST_INTF_NONE -->
+										<xs:enumeration value="PnP Service Error 2709"/> <!-- XSVC_ERROR_SNOOP_UNTRUST_INTF_DOWN -->
+										<xs:enumeration value="PnP Service Error 2710"/> <!-- XSVC_ERROR_SNOOP_UNTRUST_INTF_FAILED -->
+										<xs:enumeration value="PnP Service Error 2711"/> <!-- XSVC_ERROR_SNOOP_UNTRUST_INTF_NONE -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>       
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>        
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_snooping_body.xsd -->

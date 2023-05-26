@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP CLI-Exec Schema Version 1.0
+ * File: pnp_cli_exec_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+        <request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:cli-exec">
+                <execCLI maxWait="PT100S" xsd="false">
+                        <cmd>show version</cmd>
+                </execCLI>
+        </request>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:cli-exec" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:cli-exec" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request"> <!-- pnp request from pnp server -->
+		<xs:annotation>
+			<xs:documentation>PnP Exec Request</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+        	<xs:choice>
+				<xs:element name="execTest"> <!-- do syntax-check only without running the Exec CLI -->
+					<xs:annotation>
+						<xs:documentation>Syntax check exec</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="exec-data"/> <!-- exec CLI -->
+						</xs:sequence>
+						<xs:attribute name="details"> <!-- to collect service log or not -->
+							<xs:annotation>
+ 								<xs:documentation>
+ 									Use this attribute to control the level of error details reported.
+ 									This attribute is only available when capability returns service-log feature.
+ 								</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="brief"/> <!-- no service log collection -->
+									<xs:enumeration value="errors"/> <!-- collect service log upon error -->
+									<xs:enumeration value="all"/> <!-- collect service log unconditionally -->
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="execCLI"> <!-- run the Exec CLI -->
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="cmd"> <!-- one-line CLI -->
+								<xs:annotation>
+									<xs:documentation>This mandatory tag contains the Exec command to run. </xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="dialogue" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>
+										This optional tag is only used for interactive Exec commands. 
+										It specifies an expect and reply sequence. 
+										It includes a repeat attribute that is used if there are multiple expect and reply sequences which are identical.
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="expect"> <!-- expected output prompt from the previous CLI execution -->
+											<xs:annotation>
+												<xs:documentation>
+													The interactive prompt the system expects. 
+													The value does not have to be an exact match to the specified string. 
+													The string match has two attributes:
+														match - set to leading, trailing, embedded, or exact.
+														caseSensitive - set to true to do case sensitive match.
+												</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="match" use="optional" default="exact">
+															<xs:simpleType>
+																<xs:restriction base="xs:string">
+																	<xs:enumeration value="leading"/> <!-- leading substring matching -->
+																	<xs:enumeration value="trailing"/> <!-- trailing substring matching -->
+																	<xs:enumeration value="embedded"/> <!-- embedded substring matching -->
+																	<xs:enumeration value="exact"/> <!-- exact string matching -->
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+														<xs:attribute name="caseSensitive" type="xs:boolean" use="optional" default="true"/> <!-- case sensitive matching or not -->
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="reply" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>The desired answer to the prompt if it matches. </xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="repeat" type="xs:positiveInteger" use="optional" default="1"/> <!-- times to repeat the expect and reply -->
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="maxWait" type="xs:duration" use="optional" default="PT10S">
+							<xs:annotation>
+								<xs:documentation>
+									The time interval to accumulate data for while waiting for the Exec command to complete. 
+									Once the interval expires the operation stops and all accumulated data is sent in the response.  
+									The default is 10 seconds.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="maxResponseSize" type="xs:positiveInteger" use="optional">
+							<xs:annotation>
+								<xs:documentation>
+									The maximum number of bytes to accumulate in the body of the response. 
+									The default is 0 (infinity). 
+									If the response exceeds the specified size, the operation stops and all accumulated data is sent in the response.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="format" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>
+									To get the results of Exec commands in XML-PI format specify the path to the spec file on the Cisco IOS file system. 
+									To use the global spec file command in the Cisco IOS file system and still get XML-PI format results use the attribute format=""
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="xsd" type="xs:boolean" default="false">
+							<xs:annotation>
+								<xs:documentation>
+									If this value is set to 1 then the XML schema of the Exec command instead of the output of the Exec command.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+            		</xs:choice>
+			<xs:attribute name="correlator" type="xs:string" use="required"/> <!-- for device session control -->
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response"> <!-- pnp response to pnp server -->
+		<xs:annotation>
+			<xs:documentation>PnP Exec Response</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="errorInfo" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="execLog" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="dialogueLog" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="sent"/>
+										<xs:element name="received" minOccurs="0">
+											<xs:complexType mixed="false">
+												<xs:choice>
+													<xs:element name="text" type="xs:string"/>
+													<xs:element name="tree">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:any/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:choice>
+											</xs:complexType>
+										</xs:element>
+										<xs:element ref="errorInfo" minOccurs="0"/>
+										<xs:element ref="resultEntry" minOccurs="0" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element ref="errorInfo" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" type="xs:string" use="required"/> <!-- for device session control -->
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="errorInfo" type="errorInfoType"/>
+	<xs:complexType name="errorInfoType">
+		<xs:annotation>
+			<xs:documentation>Type of Error encountered while processing the request</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="PnP Service Error 1300"/> <!-- XSVC_ERROR_CLI_EXEC_INTERNAL -->
+						<xs:enumeration value="PnP Service Error 1301"/> <!-- XSVC_ERROR_CLI_EXEC_UNSUPPORTED -->
+						<xs:enumeration value="PnP Service Error 1302"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_ALLOC_CSB -->
+						<xs:enumeration value="PnP Service Error 1303"/> <!-- XSVC_ERROR_CLI_EXEC_INVALID_DIALOG -->
+						<xs:enumeration value="PnP Service Error 1304"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_INITIALIZE_DATA -->
+						<xs:enumeration value="PnP Service Error 1305"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_PROCESS_DATA -->
+						<xs:enumeration value="PnP Service Error 1306"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_ALLOC_RESULT -->
+						<xs:enumeration value="PnP Service Error 1307"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_FORMAT_PIPED_CLI -->
+						<xs:enumeration value="PnP Service Error 1308"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_FIND_ODM_SPEC_FILE -->
+						<xs:enumeration value="PnP Service Error 1309"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_SETUP_REDIRECT -->
+						<xs:enumeration value="PnP Service Error 1300"/> <!-- XSVC_ERROR_CLI_EXEC_CANT_REDIRECT_OUTPUT -->
+						<xs:enumeration value="PnP Service Error 1301"/> <!-- XSVC_ERROR_CLI_EXEC_STDIO_INTERRUPTION -->
+						<xs:enumeration value="PnP Service Error 1302"/> <!-- XSVC_ERROR_CLI_EXEC_CSB_INTERRUPTION -->
+						<xs:enumeration value="PnP Service Error 1303"/> <!-- XSVC_ERROR_CLI_EXEC_AUTHORIZATION_FAILED -->
+						<xs:enumeration value="PnP Service Error 1304"/> <!-- XSVC_ERROR_CLI_EXEC_INVALID_CLI -->
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="errorMessage" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="resultEntry" type="resultEntryType"/>
+	<xs:complexType name="resultEntryType">
+		<xs:annotation>
+			<xs:documentation>Type of Error encountered while processing the exec request</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="success">
+					<xs:complexType>
+						<xs:attribute name="change">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="CHANGE"/>
+									<xs:enumeration value="NO_CHANGE"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="mode">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="IMMEDIATE"/>
+									<xs:enumeration value="DEFERRED"/>
+									<xs:enumeration value="TEST"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="failure">
+					<xs:complexType>
+						<xs:attribute name="errorType">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="TEMPORARY"/>
+									<xs:enumeration value="PERMANENT"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="errorCode" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="invalid">
+					<xs:annotation>
+						<xs:documentation>Command does not set PRC</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="notExecuted">
+					<xs:annotation>
+						<xs:documentation>When commands are skipped because of a prior error.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="text" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Text output from the command, if any.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="lineNumber" use="required"/>
+		<xs:attribute name="cliString"/>
+	</xs:complexType>
+	<xs:element name="exec-data">
+		<xs:annotation>
+			<xs:documentation>Choose format for exec data.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="exec-dataType"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="exec-dataType">
+		<xs:choice>
+			<xs:element name="cli-exec-data">
+				<xs:annotation>
+					<xs:documentation>To encapsulate a block of exec commands where each line is individually tagged.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="cmd" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cli-exec-data-block" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>To encapsulate a multiline block of exec commands.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xml-exec-data">
+				<xs:annotation>
+					<xs:documentation>To encapsulate XML tagged operation commands in the format compatible with Cisco Enhanced Device Interface (EDI). </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Device-Operation">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:any namespace="##any"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>
+<!-- End of pnp_cli_exec_body.xsd -->

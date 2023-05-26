@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *************************************************
+ * Copyright (c) 2012-2017 by Cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Image Install Schema Version 1.0
+ * pnp_image_install_body.xsd
+ *
+ *************************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:image-install" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:image-install" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="image" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="copy">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="source" minOccurs="1" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:choice>
+														<xs:element name="location" type="xs:string"/>
+														<xs:element name="uri" type="xs:string"/>
+													</xs:choice>
+													<xs:element name="checksum" type="xs:string" minOccurs="0" maxOccurs="1"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="destination" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:choice>
+														<xs:element name="location" type="xs:string"/>
+														<xs:element name="uri" type="xs:string"/>
+													</xs:choice>
+												</xs:sequence>
+											</xs:complexType>				
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>						
+						</xs:sequence>
+					</xs:complexType>					
+				</xs:element>
+				<xs:choice>
+					<xs:element name="reload">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="reason" type="xs:string" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="delayIn" type="xs:int" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="user" type="xs:string" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="saveConfig" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+							</xs:sequence>
+						</xs:complexType>					
+					</xs:element>
+					<xs:element name="noReload" fixed=""/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="errorInfo" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="errorSeverity" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="XSVC_ERROR"/>									
+									</xs:restriction>									
+								</xs:simpleType>								
+							</xs:element>
+							<xs:element name="errorCode" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="PnP Service Error 1800"/> <!-- XSVC_ERROR_IMAGE_INSTALL_INTERNAL -->
+										<xs:enumeration value="PnP Service Error 1801"/> <!-- XSVC_ERROR_IMAGE_INSTALL_UNSUPPORTED -->
+										<xs:enumeration value="PnP Service Error 1802"/> <!-- XSVC_ERROR_IMGINSTALL_SRC_NOT_PROVIDED -->
+										<xs:enumeration value="PnP Service Error 1803"/> <!-- XSVC_ERROR_IMGINSTALL_SRC_NOT_FOUND -->
+										<xs:enumeration value="PnP Service Error 1804"/> <!-- XSVC_ERROR_IMGINSTALL_INVALID_EXECUTABLE -->
+										<xs:enumeration value="PnP Service Error 1805"/> <!-- XSVC_ERROR_IMGINSTALL_CONFREG_SET_TO_0x0 -->
+										<xs:enumeration value="PnP Service Error 1806"/> <!-- XSVC_ERROR_IMGINSTALL_INVALID_IMAGE_FORMAT -->
+										<xs:enumeration value="PnP Service Error 1807"/> <!-- XSVC_ERROR_IMGINSTALL_UNABLE_TO_PARSE_PATH -->
+										<xs:enumeration value="PnP Service Error 1808"/> <!-- XSVC_ERROR_IMGINSTALL_ADD_DEFAULT_FILENAME_FAILED -->
+										<xs:enumeration value="PnP Service Error 1809"/> <!-- XSVC_ERROR_IMGINSTALL_RELOAD_INPUT_ERROR -->
+										<xs:enumeration value="PnP Service Error 1810"/> <!-- XSVC_ERROR_IMGINSTALL_RELOAD_INPUT_ERROR -->
+										<xs:enumeration value="PnP Service Error 1811"/> <!-- XSVC_ERROR_IMGINSTALL_UNKNOWN_RELOAD_ERROR -->
+										<xs:enumeration value="PnP Service Error 1812"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_SIGNATURE_NOT_PRESENT -->
+										<xs:enumeration value="PnP Service Error 1813"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_SIGNATURE_NOT_VALID -->
+										<xs:enumeration value="PnP Service Error 1814"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_SIGNATURE_ALG_NOT_SUPP -->
+										<xs:enumeration value="PnP Service Error 1815"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_SIGNATURE_GEN_FAILURE -->
+										<xs:enumeration value="PnP Service Error 1816"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_SIGNATURE_VERIFY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1817"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_SIGNATURE_VERIFIED -->
+										<xs:enumeration value="PnP Service Error 1818"/> <!-- XSVC_ERROR_IMGINSTALL_DEST_STAT_FAILED -->
+										<xs:enumeration value="PnP Service Error 1819"/> <!-- XSVC_ERROR_IMGINSTALL_STARTUP_CFG_COPY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1820"/> <!-- XSVC_ERROR_IMGINSTALL_FILE_OPEN_FAILED -->
+										<xs:enumeration value="PnP Service Error 1821"/> <!-- XSVC_ERROR_IMGINSTALL_FILE_WRITE_FAILED -->
+										<xs:enumeration value="PnP Service Error 1822"/> <!-- XSVC_ERROR_IMGINSTALL_CFG_IMG_FAILED -->
+										<xs:enumeration value="PnP Service Error 1823"/> <!-- XSVC_ERROR_IMGINSTALL_SRC_FILE_OPEN_FAILED -->
+										<xs:enumeration value="PnP Service Error 1824"/> <!-- XSVC_ERROR_IMGINSTALL_INVALID_DEST_FS -->
+										<xs:enumeration value="PnP Service Error 1825"/> <!-- XSVC_ERROR_IMGINSTALL_NO_SPACE_ON_DEST_FS -->
+										<xs:enumeration value="PnP Service Error 1826"/> <!-- XSVC_ERROR_IMGINSTALL_INSTALLER_API_FAILED -->
+										<xs:enumeration value="PnP Service Error 1827"/> <!-- XSVC_ERROR_IMGINSTALL_INSTALLER_API_MISSING -->
+										<xs:enumeration value="PnP Service Error 1828"/> <!-- XSVC_ERROR_IMGINSTALL_FS_PREFIX_MALLOC_FAILED -->
+										<xs:enumeration value="PnP Service Error 1829"/> <!-- XSVC_ERROR_IMGINSTALL_IMG_COPY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1830"/> <!-- XSVC_ERROR_IMGINSTALL_COPY_TO_STANDBY_FAILED -->
+										<xs:enumeration value="PnP Service Error 1831"/> <!-- XSVC_ERROR_IMGINSTALL_CANNOT_RUN_ON_STANDBY -->
+										<xs:enumeration value="PnP Service Error 1832"/> <!-- XSVC_ERROR_IMGINSTALL_DEVICE_NOT_IN_VSS_MODE -->
+									</xs:restriction>									
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="errorMessage" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_image_install_body.xsd -->

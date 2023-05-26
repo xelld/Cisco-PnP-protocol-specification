@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Capability Schema Version 1.0
+ * File: pnp_capability_body.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample Request:
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V" usr="admin" pwd="cisco">
+	<request correlator="CiscoPnP-1.0-3-110-23ABAA4-3" xmlns="urn:cisco:pnp:capability">
+	</request>
+</pnp>
+
+Sample Response:
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V">
+	<response correlator="CiscoPnP-1.0-3-110-23ABAA4-3" success="1" xmlns="urn:cisco:pnp:capability">
+		<supportedCapabilities>
+			<capability>cisco:pnp:capabilities</capability>
+			<capability>cisco:pnp:cli-config</capability>
+			<capability>cisco:pnp:cli-exec</capability>
+			<capability>cisco:pnp:config-upgrade</capability>
+			<capability>cisco:pnp:device-info</capability>
+			<capability>cisco:pnp:file-transfer</capability>
+			<capability>cisco:pnp:image-install</capability>
+			<capability>cisco:pnp:licensing</capability>
+			<capability>cisco:pnp:tag</capability>
+			<capability>cisco:pnp:napp</capability>
+			<capability>cisco:pnp:napp-server</capability>
+			<capability>cisco:pnp:reload</capability>
+			<capability>cisco:pnp:script</capability>
+			<capability>cisco:pnp:snmp</capability>
+			<capability>cisco:pnp:snooping</capability>
+			<capability>cisco:pnp:syslog</capability>
+			<capability>cisco:pnp:topology</capability>
+			<capability>cisco:pnp:work-info</capability>
+			<capability>cisco:pnp:backoff</capability>
+			<capability>cisco:pnp:redirection</capability>
+			<capability>cisco:pnp:certificate-install</capability>
+			<capability>cisco:pnp:device-auth</capability>
+			<capability>cisco:pnp:eem-proxy</capability>
+			<capability>cisco:pnp:smu</capability>
+			<capability>cisco:pnp:python-scripting</capability>
+			<capability>cisco:pnp:device-id-cert</capability>
+		</supportedCapabilities>
+		<supportedFeatures>
+			<feature>cisco:pnp:cco-backoff</feature>
+			<feature>cisco:pnp:script-arguments</feature>
+			<feature>cisco:pnp:script-inline</feature>
+			<feature>cisco:pnp:service-log</feature>
+		</supportedFeatures>
+	</response>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp:capability" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:cisco:pnp:capability" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:complexType>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="supportedCapabilities" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="capability" maxOccurs="unbounded">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="cisco:pnp:backoff"/> <!-- for pnp profile only, not for pnp listener -->
+										<xs:enumeration value="cisco:pnp:capabilities"/>
+										<xs:enumeration value="cisco:pnp:certificate-install"/>
+										<xs:enumeration value="cisco:pnp:cli-config"/>
+										<xs:enumeration value="cisco:pnp:cli-exec"/>
+										<xs:enumeration value="cisco:pnp:config-upgrade"/> <!-- file-based config service -->
+										<xs:enumeration value="cisco:pnp:device-auth"/> <!-- for SUDI device use only -->
+										<xs:enumeration value="cisco:pnp:device-info"/>
+										<xs:enumeration value="cisco:pnp:file-transfer"/>
+										<xs:enumeration value="cisco:pnp:licensing"/>
+										<xs:enumeration value="cisco:pnp:image-install"/>
+										<xs:enumeration value="cisco:pnp:location"/>
+										<xs:enumeration value="cisco:pnp:napp"/>
+										<xs:enumeration value="cisco:pnp:napp-server"/>
+										<xs:enumeration value="cisco:pnp:redirection"/>
+										<xs:enumeration value="cisco:pnp:reload"/>
+										<xs:enumeration value="cisco:pnp:script"/>
+										<xs:enumeration value="cisco:pnp:snmp"/>
+										<xs:enumeration value="cisco:pnp:snooping"/>
+										<xs:enumeration value="cisco:pnp:syslog"/>
+										<xs:enumeration value="cisco:pnp:topology"/>
+										<xs:enumeration value="cisco:pnp:work-info"/>
+										<xs:enumeration value="cisco:pnp:eem-proxy"/> <!-- Supported in IOS 16.5 or Later Only -->
+										<xs:enumeration value="cisco:pnp:python-scripting"/> <!-- Supported in IOS 16.5 or Later Only -->
+										<xs:enumeration value="cisco:pnp:smu"/> <!-- Supported in 16.6 or Later Only -->
+										<xs:enumeration value="cisco:pnp:interface-info"/> <!-- POSIX 1.3 or later Only -->
+										<xs:enumeration value="cisco:pnp:device-id-cert"/> <!-- future release planning -->
+									</xs:restriction>
+								</xs:simpleType>						
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+                </xs:element>
+                <xs:element name="supportedFeatures" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="feature" maxOccurs="unbounded">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="cisco:pnp:cco-backoff"/> <!-- cco discovery backoff feature, supported in IOS 16.5 or Later Only -->
+                                        <xs:enumeration value="cisco:pnp:service-log"/> <!-- service log collection by details attribute, supported in IOS 16.6 or Later Only -->
+                                        <xs:enumeration value="cisco:pnp:script-arguments"/> <!-- TCL/Python script argument feature, supported in IOS 16.6 or Later Only -->
+                                        <xs:enumeration value="cisco:pnp:script-inline"/> <!-- TCL/Python inline script feature, supported in IOS 16.7 or Later Only -->
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+			</xs:sequence>
+			<xs:attribute name="correlator" use="required" type="xs:string"/>
+			<xs:attribute name="success" use="required">
+				<!-- success = 1 means the request was succesful, sucsess = 0 means failure and there will be errorInfo element -->
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_capability_body.xsd -->

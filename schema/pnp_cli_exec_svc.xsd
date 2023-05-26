@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP CLI-Exec Schema Version 1.0
+ * File: pnp_cli_exec_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample request-
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:7206VXR,VID:,SN:34835437" usr="usr15" pwd="pwd15">
+	<request correlator="CiscoPnP-1.0-1-11-14A9C6D0-2" xmlns="urn:cisco:pnp:cli-exec">
+		<execCLI maxWait="PT100S" xsd="false">
+			<cmd>show version</cmd>
+		</execCLI>
+	</request>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svc="urn:cisco:pnp:cli-exec" targetNamespace="urn:cisco:pnp">
+	<xs:import namespace="urn:cisco:pnp:cli-exec" schemaLocation="pnp_cli_exec_body.xsd"/>
+	<xs:element name="pnp">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="svc:request" minOccurs="1" maxOccurs="1"/> <!-- pnp request from pnp server -->
+				<xs:element ref="svc:response" minOccurs="1" maxOccurs="1"/> <!-- pnp response to pnp server -->
+			</xs:choice>
+			<xs:attribute name="version" fixed="1.0" use="required"/>  <!-- version control specified by PnP Agent -->
+			<xs:attribute name="udi" type="xs:string" use="required"/> <!-- device udi specified by PnP Agent -->
+			<xs:attribute name="sid" type="xs:string" use="optional"/> <!-- session id specified by PnP Server -->
+			<xs:attribute name="usr" type="xs:string" use="optional"/> <!-- device login user specified by PnP Server -->
+			<xs:attribute name="pwd" type="xs:string" use="optional"/> <!-- device login password specified by PnP Server -->
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+<!-- End of pnp_cli_exec_svc.xsd -->
+

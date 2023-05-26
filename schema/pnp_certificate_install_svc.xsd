@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ******************************************
+ * Copyright (c) 2012-2017 by cisco Systems, Inc.
+ * All rights reserved.
+ *
+ * PnP Certificate Install Schema Version 1.0
+ * File: pnp_certificate_install_svc.xsd
+ * Last Modified: May 11, 2017
+ *
+ ******************************************
+
+Sample Request:
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V" usr="admin" pwd="cisco">
+	<request correlator="CiscoPnP-1.0-1-11-23ADBFC-2" xmlns="urn:cisco:pnp:certificate-install">
+		<certificateInstall>
+			<cert>
+				<install>
+					<trustpoint>
+						<label>sjcads5252</label>
+						<copy>
+							<source>
+								<location>flash0:/sjcads5252_cert.pem</location>
+							</source>
+						</copy>
+					</trustpoint>
+				</install>
+			</cert>
+		</certificateInstall>
+	</request>
+</pnp>
+
+Sample Response:
+<pnp xmlns="urn:cisco:pnp" version="1.0" udi="PID:CISCO3945-CHASSIS,VID:V02,SN:FTX1503AH3V">
+	<response correlator="CiscoPnP-1.0-1-11-23ADBFC-2" success="1" xmlns="urn:cisco:pnp:certificate-install">
+	</response>
+</pnp>
+
+ ******************************************
+-->
+<xs:schema xmlns="urn:cisco:pnp" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:svc="urn:cisco:pnp:certificate-install" targetNamespace="urn:cisco:pnp">
+	<xs:import namespace="urn:cisco:pnp:certificate-install" schemaLocation="pnp_certificate_install_body.xsd"/>
+        <xs:element name="pnp">
+                <xs:complexType>
+                        <xs:choice>
+                                <xs:element ref="svc:request" minOccurs="1" maxOccurs="1"/>
+                                <xs:element ref="svc:response" minOccurs="1" maxOccurs="1"/>
+                        </xs:choice>
+			<xs:attribute name="version" fixed="1.0" use="required"/>  <!-- version control specified by PnP Agent -->
+			<xs:attribute name="udi" type="xs:string" use="required"/> <!-- device udi specified by PnP Agent -->
+			<xs:attribute name="sid" type="xs:string" use="optional"/> <!-- session id specified by PnP Server -->
+			<xs:attribute name="usr" type="xs:string" use="optional"/> <!-- device login user specified by PnP Server -->
+			<xs:attribute name="pwd" type="xs:string" use="optional"/> <!-- device login password specified by PnP Server -->
+                </xs:complexType>
+        </xs:element>
+</xs:schema>
+<!-- End of pnp_certificate_install_svc.xsd -->
